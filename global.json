@@ -1,0 +1,8 @@
+{
+	"ADMIN": [ "Input admin id here" ],
+	"MAIN_PORT": 8080,
+	"SID": 0,
+	"PASS":"Your password for management Here",
+	"PG_PASS": "Your PostgreSQL Password Here",
+	"PG_PORT": 5432
+}

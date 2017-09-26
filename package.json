@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "connect-redis": "^3.2.0",
+    "dddos": "^0.1.1",
+    "express": "^4.14.0",
+    "express-session": "^1.14.2",
+    "ws": "^1.1.1",
+    "kkutu-lib": "small-sunshines/kkutu-lib"
+  }
+}
