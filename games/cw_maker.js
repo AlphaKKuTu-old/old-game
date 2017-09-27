@@ -17,9 +17,10 @@
  */
 
 ﻿var Prompt = require('prompt');
-var DB = require('../../Web/db');
-var Const = require('../../const');
-var Lizard = require('../../sub/lizard');
+var DB = require('../db');
+var Const = require('../const');
+const lib = require('kkutu-lib');
+var Lizard = lib.lizard;
 var LANG = 'ko';
 
 Prompt.start();

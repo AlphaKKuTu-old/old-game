@@ -16,8 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-var Const = require('../../const');
-var Lizard = require('../../sub/lizard');
+var Const = require('../const');
+const lib = require('kkutu-lib');
+var Lizard = lib.lizard;
 var DB;
 var DIC;
 

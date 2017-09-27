@@ -283,7 +283,8 @@ exports.init = function(_SID, CHAN){
 				JLog.warn("Error on #" + key + " on ws: " + err.toString());
 			});
 			// 웹 서버
-			if(socket.upgradeReq.headers.host.match(/^127\.0\.0\.2:/)){
+			console.log(socket.upgradeReq.url);
+			if(socket.upgradeReq.url == '/'+GLOBAL.WS_KEY){
 				if(WDIC[key]) WDIC[key].socket.close();
 				WDIC[key] = new KKuTu.WebServer(socket);
 				JLog.info(`New web server #${key}`);

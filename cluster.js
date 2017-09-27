@@ -21,7 +21,7 @@ const Const = require('./const');
 const lib = require('kkutu-lib');
 const JLog = lib.jjlog;
 const SID = Const.SID;
-const CPU = Number(process.argv[2] | global.MAIN_PORT); //require("os").cpus().length;
+const CPU = Number(process.argv[2] || 4); //require("os").cpus().length;
 
 if(isNaN(SID)){
 	if(process.argv[2] == "test"){

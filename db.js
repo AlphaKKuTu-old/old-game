@@ -26,35 +26,26 @@ const Collection = lib.collection;
 const Pub = lib.checkpub;
 const Lizard = lib.lizard;
 
-const FAKE_REDIS_FUNC = () => {
-	const R = new Lizard.Tail();
-
-	R.go({});
-	return R;
-};
-const FAKE_REDIS = {
-	putGlobal: FAKE_REDIS_FUNC,
-	getGlobal: FAKE_REDIS_FUNC,
-	getPage: FAKE_REDIS_FUNC,
-	getSurround: FAKE_REDIS_FUNC
-};
-
 Pub.ready = function(isPub){
-	const Redis	 = require("redis").createClient();
-	const Pg		 = new PgPool({
-		user: "postgres",
+	const Redis	 = require("redis").createClient({
+		host: GLOBAL.REDIS_ADDR,
+		port: GLOBAL.REDIS_PORT,
+		password: GLOBAL.REDIS_PASS,
+		db: GLOBAL.REDIS_DB
+	});
+	const Pg = new PgPool({
+		user: GLOBAL.PG_USER,
 		password: GLOBAL.PG_PASS,
 		port: GLOBAL.PG_PORT,
-		database: "main"
+		database: GLOBAL.PG_DB,
+		host: GLOBAL.PG_ADDR
 	});
 	Redis.on('connect', function(){
 		connectPg();
 	});
 	Redis.on('error', function(err){
 		JLog.error("Error from Redis: " + err);
-		JLog.alert("Run with no-redis mode.");
-		Redis.quit();
-		connectPg(true);
+		return;
 	});
 	function connectPg(noRedis){
 		Pg.connect(function(err, pgMain){

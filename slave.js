@@ -46,7 +46,7 @@ const MODE_LENGTH = Master.MODE_LENGTH;
 JLog.info(`<< KKuTu Server:${Server.options.port} >>`);
 
 process.on('uncaughtException', function(err){
-	var text = `:${process.env['KKUTU_PORT']} [${new Date().toLocaleString()}] ERROR: ${err.toString()}\n${err.stack}`;
+	var text = `${process.env['KKUTU_PORT']} [${new Date().toLocaleString()}] ERROR: ${err.toString()}\n${err.stack}`;
 	
 	for(var i in DIC){
 		DIC[i].send('dying');

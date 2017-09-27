@@ -16,14 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-﻿var File = require('fs');
+const File = require('fs');
 
 exports.PROVERBS = {
 	'ko': [],
 	'en': []
 };
 
-File.readFile(`${__dirname}/../../data/proverbs.txt`, function(err, res){
+File.readFile(`${__dirname}/../proverbs.txt`, function(err, res){
 	if(err) throw Error(err.toString());
 	var db = res.toString().split('~~~');
 	
