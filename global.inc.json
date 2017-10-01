@@ -1,6 +1,6 @@
 {
 	"ADMIN": [ "Input admin id here" ],
-	"MAIN_PORT": 8080,
+	"MAIN_PORTS": [8080, 8090],
 	"SID": 0,
 	"PG_ADDR": "Your PostgreSQL server Address Here",
 	"PG_USER": "postgres",
@@ -11,5 +11,6 @@
 	"REDIS_PASS": "Your Redis Password Here",
 	"REDIS_PORT": 6379,
 	"REDIS_DB": 0,
-	"WS_KEY": "kkutu_test"
+	"WS_KEY": "kkutu_test",
+	"CLUSTER_SLAVES": 1
 }

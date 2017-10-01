@@ -16,22 +16,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-var GUEST_PERMISSION;
-var Cluster = require("cluster");
-var Const = require('./const');
+/**
+ * 볕뉘 수정사항:
+ * var 에서 let/const 로 변수 변경
+ * kkutu-lib 모듈에 호환되도록 수정
+ */
+
+let GUEST_PERMISSION;
+const Cluster = require("cluster");
+const Const = require('./const');
+//볕뉘 수정
 const lib = require('kkutu-lib');
-var Lizard = lib.lizard;
-var JLog = lib.jjlog;
+const Lizard = lib.lizard;
+const JLog = lib.jjlog;
 // 망할 셧다운제 const Ajae = lib.ajae;
-var DB;
-var SHOP;
-var DIC;
-var ROOM;
-var _rid;
-var Rule;
-var guestProfiles = [];
-var CHAN;
-var channel = process.env['CHANNEL'] || 0;
+//볕뉘 수정 끝
+let DB;
+let SHOP;
+let DIC;
+let ROOM;
+let _rid;
+let Rule;
+let guestProfiles = [];
+let CHAN;
+let channel = process.env['CHANNEL'] || 0;
 
 const NUM_SLAVES = 4;
 const GUEST_IMAGE = "/img/kkutu/guest.png";
@@ -40,7 +48,7 @@ const PER_OKG = 600000;
 
 exports.NIGHT = false;
 exports.init = function(_DB, _DIC, _ROOM, _GUEST_PERMISSION, _CHAN){
-	var i, k;
+	let i, k;
 	
 	DB = _DB;
 	DIC = _DIC;
@@ -57,7 +65,7 @@ exports.init = function(_DB, _DIC, _ROOM, _GUEST_PERMISSION, _CHAN){
 		});
 	});
 	Rule = {};
-	for(i in Const.RULE){
+	for(let i in Const.RULE){
 		k = Const.RULE[i].rule;
 		Rule[k] = require(`./games/${k.toLowerCase()}`);
 		Rule[k].init(DB, DIC);
@@ -79,18 +87,18 @@ exports.processAjae = function(){
 };
 */
 exports.getUserList = function(){
-	var i, res = {};
+	let i, res = {};
 	
-	for(i in DIC){
+	for(let i in DIC){
 		res[i] = DIC[i].getData();
 	}
 	
 	return res;
 };
 exports.getRoomList = function(){
-	var i, res = {};
+	let i, res = {};
 	
-	for(i in ROOM){
+	for(let i in ROOM){
 		res[i] = ROOM[i].getData();
 	}
 	
@@ -102,21 +110,21 @@ exports.narrate = function(list, type, data){
 	});
 };
 exports.publish = function(type, data, _room){
-	var i;
+	let i;
 	
 	if(Cluster.isMaster){
-		for(i in DIC){
+		for(let i in DIC){
 			DIC[i].send(type, data);
 		}
 	}else if(Cluster.isWorker){
 		if(type == "room") process.send({ type: "room-publish", data: data, password: _room });
-		else for(i in DIC){
+		else for(let i in DIC){
 			DIC[i].send(type, data);
 		}
 	}
 };
 exports.Robot = function(target, place, level){
-	var my = this;
+	const my = this;
 	
 	my.id = target + place + Math.floor(Math.random() * 1000000000);
 	my.robot = true;
@@ -150,7 +158,7 @@ exports.Robot = function(target, place, level){
 	my.obtain = function(){};
 	my.invokeWordPiece = function(text, coef){};
 	my.publish = function(type, data, noBlock){
-		var i;
+		let i;
 		
 		if(my.target == null){
 			for(i in DIC){
@@ -167,7 +175,7 @@ exports.Robot = function(target, place, level){
 	my.setTeam(0);
 };
 exports.Data = function(data){
-	var i, j;
+	let i, j;
 	
 	if(!data) data = {};
 	
@@ -175,19 +183,19 @@ exports.Data = function(data){
 	this.playTime = data.playTime || 0;
 	this.connectDate = data.connectDate || 0;
 	this.record = {};
-	for(i in Const.GAME_TYPE){
+	for(let i in Const.GAME_TYPE){
 		this.record[j = Const.GAME_TYPE[i]] = data.record ? (data.record[Const.GAME_TYPE[i]] || [0, 0, 0, 0]) : [0, 0, 0, 0];
 		if(!this.record[j][3]) this.record[j][3] = 0;
 	}
 	// 전, 승, 점수
 };
 exports.WebServer = function(socket){
-	var my = this;
+	const my = this;
 	
 	my.socket = socket;
 	
 	my.send = function(type, data){
-		var i, r = data || {};
+		let i, r = data || {};
 		
 		r.type = type;
 		
@@ -209,8 +217,8 @@ exports.WebServer = function(socket){
 	socket.on('message', my.onWebServerMessage);
 };
 exports.Client = function(socket, profile, sid){
-	var my = this;
-	var gp, okg;
+	let my = this;
+	let gp, okg;
 	
 	if(profile){
 		my.id = profile.id;
@@ -260,7 +268,7 @@ exports.Client = function(socket, profile, sid){
 		};
 	}else{
 		my.onOKG = function(time){
-			var d = (new Date()).getDate();
+			let d = (new Date()).getDate();
 			
 			if(my.guest) return;
 			if(d != my.data.connectDate){
@@ -284,7 +292,7 @@ exports.Client = function(socket, profile, sid){
 		exports.onClientClosed(my, code);
 	});
 	socket.on('message', function(msg){
-		var data, room = ROOM[my.place];
+		let data, room = ROOM[my.place];
 		
 		JLog.log(`Chan @${channel} Msg #${my.id}: ${msg}`);
 		try{ data = JSON.parse(msg); }catch(e){ data = { error: 400 }; }
@@ -306,7 +314,7 @@ exports.Client = function(socket, profile, sid){
 	};
 	*/
 	my.getData = function(gaming){
-		var o = {
+		const o = {
 			id: my.id,
 			guest: my.guest,
 			game: {
@@ -329,7 +337,7 @@ exports.Client = function(socket, profile, sid){
 		return o;
 	};
 	my.send = function(type, data){
-		var i, r = data || {};
+		let i, r = data || {};
 		
 		r.type = type;
 		
@@ -339,8 +347,8 @@ exports.Client = function(socket, profile, sid){
 		my.send('error', { code: code, message: msg });
 	};
 	my.publish = function(type, data, noBlock){
-		var i;
-		var now = new Date(), st = now - my._pub;
+		let i;
+		let now = new Date(), st = now - my._pub;
 		
 		if(st <= Const.SPAM_ADD_DELAY) my.spam++;
 		else if(st >= Const.SPAM_CLEAR_DELAY) my.spam = 0;
@@ -362,7 +370,7 @@ exports.Client = function(socket, profile, sid){
 		}
 		data.profile = my.profile;
 		if(my.subPlace && type != 'chat') my.send(type, data);
-		else for(i in DIC){
+		else for(let i in DIC){
 			if(DIC[i].place == my.place) DIC[i].send(type, data);
 		}
 		if(Cluster.isWorker && type == 'user') process.send({ type: "user-publish", data: data });
@@ -372,17 +380,17 @@ exports.Client = function(socket, profile, sid){
 		my.publish('chat', { value: msg, notice: code ? true : false, code: code });
 	};
 	my.checkExpire = function(){
-		var now = new Date();
-		var d = now.getDate();
-		var i, expired = [];
-		var gr;
+		const now = new Date();
+		const d = now.getDate();
+		let i, expired = [];
+		let gr;
 		
 		now = now.getTime() * 0.001;
 		if(d != my.data.connectDate){
 			my.data.connectDate = d;
 			my.data.playTime = 0;
 		}
-		for(i in my.box){
+		for(let i in my.box){
 			if(!my.box[i]){
 				delete my.box[i];
 				continue;
@@ -403,7 +411,7 @@ exports.Client = function(socket, profile, sid){
 		}
 	};
 	my.refresh = function(){
-		var R = new Lizard.Tail();
+		const R = new Lizard.Tail();
 		
 		if(my.guest){
 			my.equip = {};
@@ -413,8 +421,8 @@ exports.Client = function(socket, profile, sid){
 			
 			R.go({ result: 200 });
 		}else DB.users.findOne([ '_id', my.id ]).on(function($user){
-			var first = !$user;
-			var black = first ? "" : $user.black;
+			let first = !$user;
+			let black = first ? "" : $user.black;
 			
 			if(first) $user = { money: 0 };
 			if(black == "null") black = false;
@@ -456,7 +464,7 @@ exports.Client = function(socket, profile, sid){
 		return R;
 	};
 	my.flush = function(box, equip, friends){
-		var R = new Lizard.Tail();
+		const R = new Lizard.Tail();
 		
 		if(my.guest){
 			R.go({ id: my.id, prev: 0 });
@@ -480,7 +488,7 @@ exports.Client = function(socket, profile, sid){
 	};
 	my.invokeWordPiece = function(text, coef){
 		if(!my.game.wpc) return;
-		var v;
+		let v;
 		
 		if(Math.random() <= 0.04 * coef){
 			v = text.charAt(Math.floor(Math.random() * text.length));
@@ -489,7 +497,7 @@ exports.Client = function(socket, profile, sid){
 		}
 	};
 	my.enter = function(room, spec, pass){
-		var $room, i;
+		let $room, i;
 		
 		if(my.place){
 			my.send('roomStuck');
@@ -501,7 +509,7 @@ exports.Client = function(socket, profile, sid){
 			
 			if(!$room){
 				if(Cluster.isMaster){
-					for(i in CHAN) CHAN[i].send({ type: "room-invalid", room: room });
+					for(let i in CHAN) CHAN[i].send({ type: "room-invalid", room: room });
 				}else{
 					process.send({ type: "room-invalid", room: room });
 				}
@@ -548,7 +556,7 @@ exports.Client = function(socket, profile, sid){
 				5. 마스터가 방 정보를 반영한다.
 			*/
 			if(Cluster.isMaster){
-				var av = getFreeChannel();
+				let av = getFreeChannel();
 				
 				room.id = _rid;
 				room._create = true;
@@ -579,7 +587,7 @@ exports.Client = function(socket, profile, sid){
 		}
 	};
 	my.leave = function(kickVote){
-		var $room = ROOM[my.place];
+		let $room = ROOM[my.place];
 		
 		if(my.subPlace){
 			my.pracRoom.go(my);
@@ -590,7 +598,7 @@ exports.Client = function(socket, profile, sid){
 		if($room) $room.go(my, kickVote);
 	};
 	my.setForm = function(mode){
-		var $room = ROOM[my.place];
+		let $room = ROOM[my.place];
 		
 		if(!$room) return;
 		
@@ -603,15 +611,15 @@ exports.Client = function(socket, profile, sid){
 		my.publish('user', my.getData());
 	};
 	my.kick = function(target, kickVote){
-		var $room = ROOM[my.place];
-		var i, $c;
-		var len = $room.players.length;
+		let $room = ROOM[my.place];
+		let i, $c;
+		let len = $room.players.length;
 		
 		if(target == null){ // 로봇 (이 경우 kickVote는 로봇의 식별자)
 			$room.removeAI(kickVote);
 			return;
 		}
-		for(i in $room.players){
+		for(let i in $room.players){
 			if($room.players[i].robot) len--;
 		}
 		if(len < 4) kickVote = { target: target, Y: 1, N: 0 };
@@ -621,7 +629,7 @@ exports.Client = function(socket, profile, sid){
 			if(DIC[target]) DIC[target].leave(kickVote);
 		}else{
 			$room.kickVote = { target: target, Y: 1, N: 0, list: [] };
-			for(i in $room.players){
+			for(let i in $room.players){
 				$c = DIC[$room.players[i]];
 				if(!$c) continue;
 				if($c.id == $room.master) continue;
@@ -632,8 +640,8 @@ exports.Client = function(socket, profile, sid){
 		}
 	};
 	my.kickVote = function(client, agree){
-		var $room = ROOM[client.place];
-		var $m;
+		let $room = ROOM[client.place];
+		let $m;
 		
 		if(!$room) return;
 		
@@ -652,7 +660,7 @@ exports.Client = function(socket, profile, sid){
 		clearTimeout(client.kickTimer);
 	};
 	my.toggle = function(){
-		var $room = ROOM[my.place];
+		let $room = ROOM[my.place];
 		
 		if(!$room) return;
 		if($room.master == my.id) return;
@@ -662,7 +670,7 @@ exports.Client = function(socket, profile, sid){
 		my.publish('user', my.getData());
 	};
 	my.start = function(){
-		var $room = ROOM[my.place];
+		let $room = ROOM[my.place];
 		
 		if(!$room) return;
 		if($room.master != my.id) return;
@@ -671,9 +679,9 @@ exports.Client = function(socket, profile, sid){
 		$room.ready();
 	};
 	my.practice = function(level){
-		var $room = ROOM[my.place];
-		var ud;
-		var pr;
+		let $room = ROOM[my.place];
+		let ud;
+		let pr;
 		
 		if(!$room) return;
 		if(my.subPlace) return;
@@ -697,7 +705,7 @@ exports.Client = function(socket, profile, sid){
 		my.pracRoom.game.hum = 1;
 	};
 	my.setRoom = function(room){
-		var $room = ROOM[my.place];
+		let $room = ROOM[my.place];
 		
 		if($room){
 			if(!$room.gaming){
@@ -713,19 +721,19 @@ exports.Client = function(socket, profile, sid){
 		}
 	};
 	my.applyEquipOptions = function(rw){
-		var $obj;
-		var i, j;
-		var pm = rw.playTime / 60000;
+		let $obj;
+		let i, j;
+		let pm = rw.playTime / 60000;
 		
 		rw._score = Math.round(rw.score);
 		rw._money = Math.round(rw.money);
 		rw._blog = [];
 		my.checkExpire();
-		for(i in my.equip){
+		for(leti in my.equip){
 			$obj = SHOP[my.equip[i]];
 			if(!$obj) continue;
 			if(!$obj.options) continue;
-			for(j in $obj.options){
+			for(let j in $obj.options){
 				if(j == "gEXP") rw.score += rw._score * $obj.options[j];
 				else if(j == "hEXP") rw.score += $obj.options[j] * pm;
 				else if(j == "gMNY") rw.money += rw._money * $obj.options[j];
@@ -755,7 +763,7 @@ exports.Client = function(socket, profile, sid){
 		if(flush) my.flush(true);
 	};
 	my.addFriend = function(id){
-		var fd = DIC[id];
+		let fd = DIC[id];
 		
 		if(!fd) return;
 		my.friends[id] = fd.profile.title || fd.profile.name;
@@ -766,7 +774,7 @@ exports.Client = function(socket, profile, sid){
 		DB.users.findOne([ '_id', id ]).limit([ 'friends', true ]).on(function($doc){
 			if(!$doc) return;
 			
-			var f = $doc.friends;
+			let f = $doc.friends;
 			
 			delete f[my.id];
 			DB.users.update([ '_id', id ]).set([ 'friends', f ]).on();
@@ -777,7 +785,7 @@ exports.Client = function(socket, profile, sid){
 	};
 };
 exports.Room = function(room, channel){
-	var my = this;
+	let my = this;
 	
 	my.id = room.id || _rid;
 	my.channel = channel;
@@ -806,12 +814,12 @@ exports.Room = function(room, channel){
 	my.game = {};
 	
 	my.getData = function(){
-		var i, readies = {};
-		var pls = [];
-		var seq = my.game.seq ? my.game.seq.map(filterRobot) : [];
-		var o;
+		let i, readies = {};
+		let pls = [];
+		let seq = my.game.seq ? my.game.seq.map(filterRobot) : [];
+		let o;
 		
-		for(i in my.players){
+		for(let i in my.players){
 			if(o = DIC[my.players[i]]){
 				readies[my.players[i]] = {
 					r: o.ready || o.game.ready,
@@ -859,9 +867,9 @@ exports.Room = function(room, channel){
 		my.export();
 	};
 	my.setAI = function(target, level, team){
-		var i;
+		let i;
 		
-		for(i in my.players){
+		for(let i in my.players){
 			if(!my.players[i]) continue;
 			if(!my.players[i].robot) continue;
 			if(my.players[i].id == target){
@@ -874,9 +882,9 @@ exports.Room = function(room, channel){
 		return false;
 	};
 	my.removeAI = function(target, noEx){
-		var i, j;
+		let i, j;
 		
-		for(i in my.players){
+		for(let i in my.players){
 			if(!my.players[i]) continue;
 			if(!my.players[i].robot) continue;
 			if(!target || my.players[i].id == target){
@@ -909,7 +917,7 @@ exports.Room = function(room, channel){
 	};
 	my.spectate = function(client, password){
 		if(!my.practice) client.place = my.id;
-		var len = my.players.push(client.id);
+		let len = my.players.push(client.id);
 		
 		if(Cluster.isWorker){
 			client.ready = false;
@@ -922,8 +930,8 @@ exports.Room = function(room, channel){
 		}
 	};
 	my.go = function(client, kickVote){
-		var x = my.players.indexOf(client.id);
-		var me;
+		let x = my.players.indexOf(client.id);
+		let me;
 		
 		if(x == -1){
 			client.place = 0;
@@ -983,7 +991,7 @@ exports.Room = function(room, channel){
 		}
 	};
 	my.set = function(room){
-		var i, k, ijc, ij;
+		let i, k, ijc, ij;
 		
 		my.title = room.title;
 		my.password = room.password;
@@ -993,7 +1001,7 @@ exports.Room = function(room, channel){
 		my.round = Math.round(room.round);
 		my.time = room.time * my.rule.time;
 		if(room.opts && my.opts){
-			for(i in Const.OPTIONS){
+			for(let i in Const.OPTIONS){
 				k = Const.OPTIONS[i].name.toLowerCase();
 				my.opts[k] = room.opts[k] && my.rule.opts.includes(i);
 			}
@@ -1005,13 +1013,13 @@ exports.Room = function(room, channel){
 		if(!my.rule.ai){
 			while(my.removeAI(false, true));
 		}
-		for(i in my.players){
+		for(let i in my.players){
 			if(DIC[my.players[i]]) DIC[my.players[i]].ready = false;
 		}
 	};
 	my.preReady = function(teams){
-		var i, j, t = 0, l = 0;
-		var avTeam = [];
+		let i, j, t = 0, l = 0;
+		let avTeam = [];
 		
 		// 팀 검사
 		if(teams){
@@ -1043,11 +1051,11 @@ exports.Room = function(room, channel){
 		return false;
 	};
 	my.ready = function(){
-		var i, all = true;
-		var len = 0;
-		var teams = [ [], [], [], [], [] ];
+		let i, all = true;
+		let len = 0;
+		let teams = [ [], [], [], [], [] ];
 		
-		for(i in my.players){
+		for(let i in my.players){
 			if(my.players[i].robot){
 				len++;
 				teams[my.players[i].game.team].push(my.players[i]);
@@ -1074,8 +1082,8 @@ exports.Room = function(room, channel){
 		}else DIC[my.master].sendError(412);
 	};
 	my.start = function(pracLevel){
-		var i, j, o, hum = 0;
-		var now = (new Date()).getTime();
+		let i, j, o, hum = 0;
+		let now = (new Date()).getTime();
 		
 		my.gaming = true;
 		my.game.late = true;
@@ -1087,7 +1095,7 @@ exports.Room = function(room, channel){
 			my.game.robots.push(o = new exports.Robot(my.master, my.id, pracLevel));
 			my.game.seq.push(o, my.master);
 		}else{
-			for(i in my.players){
+			for(let i in my.players){
 				if(my.players[i].robot){
 					my.game.robots.push(my.players[i]);
 				}else{
@@ -1101,7 +1109,7 @@ exports.Room = function(room, channel){
 				o = my.game.seq.length;
 				j = my._avTeam.length;
 				my.game.seq = [];
-				for(i=0; i<o; i++){
+				for(let i=0; i<o; i++){
 					var v = my._teams[my._avTeam[i % j]].shift();
 					
 					if(!v) continue;
@@ -1112,7 +1120,7 @@ exports.Room = function(room, channel){
 			}
 		}
 		my.game.mission = null;
-		for(i in my.game.seq){
+		for(let i in my.game.seq){
 			o = DIC[my.game.seq[i]] || my.game.seq[i];
 			if(!o) continue;
 			if(!o.game) continue;
@@ -1147,18 +1155,18 @@ exports.Room = function(room, channel){
 		clearTimeout(my.game.qTimer);
 	};
 	my.roundEnd = function(data){
-		var i, o, rw;
-		var res = [];
-		var users = {};
-		var rl;
-		var pv = -1;
-		var suv = [];
-		var teams = [ null, [], [], [], [] ];
-		var sumScore = 0;
-		var now = (new Date()).getTime();	
+		let i, o, rw;
+		let res = [];
+		let users = {};
+		let rl;
+		let pv = -1;
+		let suv = [];
+		let teams = [ null, [], [], [], [] ];
+		let sumScore = 0;
+		let now = (new Date()).getTime();	
 		
 		my.interrupt();
-		for(i in my.players){
+		for(let i in my.players){
 			o = DIC[my.players[i]];
 			if(!o) continue;
 			if(o.cameWhenGaming){
@@ -1171,15 +1179,15 @@ exports.Room = function(room, channel){
 				o.setForm("J");
 			}
 		}
-		for(i in my.game.seq){
+		for(let i in my.game.seq){
 			o = DIC[my.game.seq[i]] || my.game.seq[i];
 			if(!o) continue;
 			if(o.robot){
 				if(o.game.team) teams[o.game.team].push(o.game.score);
 			}else if(o.team) teams[o.team].push(o.game.score);
 		}
-		for(i=1; i<5; i++) if(o = teams[i].length) teams[i] = [ o, teams[i].reduce(function(p, item){ return p + item; }, 0) ];
-		for(i in my.game.seq){
+		for(let i=1; i<5; i++) if(o = teams[i].length) teams[i] = [ o, teams[i].reduce(function(p, item){ return p + item; }, 0) ];
+		for(let i in my.game.seq){
 			o = DIC[my.game.seq[i]];
 			if(!o) continue;
 			sumScore += o.game.score;
@@ -1188,7 +1196,7 @@ exports.Room = function(room, channel){
 		res.sort(function(a, b){ return b.score - a.score; });
 		rl = res.length;
 		
-		for(i in res){
+		for(let i in res){
 			o = DIC[res[i].id];
 			if(pv == res[i].score){
 				res[i].rank = res[Number(i) - 1].rank;
@@ -1217,17 +1225,17 @@ exports.Room = function(room, channel){
 			suv.push(o.flush(true));
 		}
 		Lizard.all(suv).then(function(uds){
-			var o = {};
+			let o = {};
 			
 			suv = [];
-			for(i in uds){
+			for(let i in uds){
 				o[uds[i].id] = { prev: uds[i].prev };
 				suv.push(DB.redis.getSurround(uds[i].id));
 			}
 			Lizard.all(suv).then(function(ranks){
-				var i, j;
+				let i, j;
 				
-				for(i in ranks){
+				for(let i in ranks){
 					if(!o[ranks[i].target]) continue;
 					
 					o[ranks[i].target].list = ranks[i].data;
@@ -1245,8 +1253,8 @@ exports.Room = function(room, channel){
 		if(DIC[my.master]) DIC[my.master].publish(type, data, nob);
 	};
 	my.export = function(target, kickVote, spec){
-		var obj = { room: my.getData() };
-		var i, o;
+		let obj = { room: my.getData() };
+		let i, o;
 		
 		if(!my.rule) return;
 		if(target) obj.target = target;
@@ -1263,7 +1271,7 @@ exports.Room = function(room, channel){
 				obj.means = my.game.means;
 			}
 			obj.spec = {};
-			for(i in my.game.seq){
+			for(let i in my.game.seq){
 				if(o = DIC[my.game.seq[i]]) obj.spec[o.id] = o.game.score;
 			}
 		}
@@ -1322,19 +1330,19 @@ exports.Room = function(room, channel){
 		return my.route("getTitle");
 	};
 	/*my.route = function(func, ...args){
-		var cf;
+		let cf;
 		
 		if(!(cf = my.checkRoute(func))) return;
 		return Slave.run(my, func, args);
 	};*/
 	my.route = my.routeSync = function(func, ...args){
-		var cf;
+		let cf;
 		
 		if(!(cf = my.checkRoute(func))) return;
 		return cf.apply(my, args);
 	};
 	my.checkRoute = function(func){
-		var c;
+		let c;
 		
 		if(!my.rule) return JLog.warn("Unknown mode: " + my.mode), false;
 		if(!(c = Rule[my.rule.rule])) return JLog.warn("Unknown rule: " + my.rule.rule), false;
@@ -1344,21 +1352,21 @@ exports.Room = function(room, channel){
 	my.set(room);
 };
 function getFreeChannel(){
-	var i, list = {};
+	let i, list = {};
 	
 	if(Cluster.isMaster){
-		var mk = 1;
+		let mk = 1;
 		
-		for(i in CHAN){
+		for(let i in CHAN){
 			// if(CHAN[i].isDead()) continue;
 			list[i] = 0;
 		}
-		for(i in ROOM){
+		for(let i in ROOM){
 			// if(!list.hasOwnProperty(i)) continue;
 			mk = ROOM[i].channel;
 			list[mk]++;
 		}
-		for(i in list){
+		for(let i in list){
 			if(list[i] < list[mk]) mk = i;
 		}
 		return Number(mk);
@@ -1367,24 +1375,24 @@ function getFreeChannel(){
 	}
 }
 function getGuestName(sid){
-	var i, len = sid.length, res = 0;
+	let i, len = sid.length, res = 0;
 	
-	for(i=0; i<len; i++){
+	for(let i=0; i<len; i++){
 		res += sid.charCodeAt(i) * (i+1);
 	}
 	return "GUEST" + (1000 + (res % 9000));
 }
 function shuffle(arr){
-	var i, r = [];
+	let i, r = [];
 	
-	for(i in arr) r.push(arr[i]);
+	for(let i in arr) r.push(arr[i]);
 	r.sort(function(a, b){ return Math.random() - 0.5; });
 	
 	return r;
 }
 function getRewards(mode, score, bonus, rank, all, ss){
-	var rw = { score: 0, money: 0 };
-	var sr = score / ss;
+	let rw = { score: 0, money: 0 };
+	let sr = score / ss;
 	
 	// all은 1~8
 	// rank는 0~7

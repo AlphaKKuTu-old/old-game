@@ -16,34 +16,42 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-var Const = require('../const');
-const lib = require('kkutu-lib');
-var Lizard = lib.lizard;
-var DB;
-var DIC;
+/**
+ * 볕뉘 수정사항:
+ * var 에서 let/const 로 변수 변경
+ * kkutu-lib 모듈에 호환되도록 수정
+ */
 
-var ROBOT_SEEK_DELAY = [ 5000, 3000, 1500, 700, 100 ];
-var ROBOT_CATCH_RATE = [ 0.05, 0.2, 0.4, 0.6, 0.99 ];
-var ROBOT_TYPE_COEF = [ 2000, 1200, 800, 300, 0 ];
+const Const = require('../const');
+//볕뉘 수정
+const lib = require('kkutu-lib');
+const Lizard = lib.lizard;
+//볕뉘 수정 끝
+let DB;
+let DIC;
+
+const ROBOT_SEEK_DELAY = [ 5000, 3000, 1500, 700, 100 ];
+const ROBOT_CATCH_RATE = [ 0.05, 0.2, 0.4, 0.6, 0.99 ];
+const ROBOT_TYPE_COEF = [ 2000, 1200, 800, 300, 0 ];
 
 exports.init = function(_DB, _DIC){
 	DB = _DB;
 	DIC = _DIC;
 };
 exports.getTitle = function(){
-	var R = new Lizard.Tail();
-	var my = this;
-	var means = [];
-	var mdb = [];
+	const R = new Lizard.Tail();
+	const my = this;
+	let means = [];
+	let mdb = [];
 	
 	my.game.started = false;
 	DB.kkutu_cw[my.rule.lang].find().on(function($box){
-		var answers = {};
-		var boards = [];
-		var maps = [];
-		var left = my.round;
-		var pick, pi, i, j;
-		var mParser = [];
+		let answers = {};
+		let boards = [];
+		let maps = [];
+		let left = my.round;
+		let pick, pi, i, j;
+		let mParser = [];
 		
 		while(left){
 			pick = $box[pi = Math.floor(Math.random() * $box.length)];
@@ -56,8 +64,8 @@ exports.getTitle = function(){
 			boards.push(pick.data.split('|').map(function(item){ return item.split(','); }));
 			left--;
 		}
-		for(i in boards){
-			for(j in boards[i]){
+		for(let i in boards){
+			for(let j in boards[i]){
 				pi = boards[i][j];
 				mParser.push(getMeaning(i, pi));
 				answers[`${i},${pi[0]},${pi[1]},${pi[2]}`] = pi.pop();
@@ -74,14 +82,14 @@ exports.getTitle = function(){
 		});
 	});
 	function getMeaning(round, bItem){
-		var R = new Lizard.Tail();
-		var word = bItem[4];
-		var x = Number(bItem[0]), y = Number(bItem[1]);
+		const R = new Lizard.Tail();
+		let word = bItem[4];
+		let x = Number(bItem[0]), y = Number(bItem[1]);
 		
 		DB.kkutu[my.rule.lang].findOne([ '_id', word ]).on(function($doc){
 			if(!$doc) return R.go(null);
-			var rk = `${x},${y}`;
-			var i, o;
+			let rk = `${x},${y}`;
+			let i, o;
 			
 			means[round][`${rk},${bItem[2]}`] = o = {
 				count: 0,
@@ -91,7 +99,7 @@ exports.getTitle = function(){
 				theme: $doc.theme,
 				mean: $doc.mean.replace(new RegExp(word.split('').map(function(w){ return w + "\\s?"; }).join(''), "g"), "★")
 			};
-			for(i=0; i<o.len; i++){
+			for(let i=0; i<o.len; i++){
 				rk = `${x},${y}`;
 				if(!mdb[round][rk]) mdb[round][rk] = [];
 				mdb[round][rk].push(o);
@@ -104,7 +112,7 @@ exports.getTitle = function(){
 	return R;
 };
 exports.roundReady = function(){
-	var my = this;
+	const my = this;
 	
 	if(!my.game.started){
 		my.game.started = true;
@@ -118,7 +126,7 @@ exports.roundReady = function(){
 	}
 };
 exports.turnStart = function(){
-	var my = this;
+	const my = this;
 	
 	my.game.late = false;
 	my.game.roundAt = (new Date()).getTime();
@@ -133,25 +141,25 @@ exports.turnStart = function(){
 	}*/
 };
 function turnHint(){
-	var my = this;
+	const my = this;
 	
 	my.byMaster('turnHint', {
 		hint: my.game.hint[my.game.meaned++]
 	}, true);
 }
 exports.turnEnd = function(){
-	var my = this;
-	var i;
+	const my = this;
+	let i;
 	
 	my.game.late = true;
 	my.byMaster('turnEnd', {});
 	my.game._rrt = setTimeout(my.roundReady, 2500);
 };
 exports.submit = function(client, text, data){
-	var my = this;
-	var obj, score, mbjs, mbj, jx, jy, v;
-	var play = (my.game.seq ? my.game.seq.includes(client.id) : false) || client.robot;
-	var i, j, key;
+	const my = this;
+	let obj, score, mbjs, mbj, jx, jy, v;
+	let play = (my.game.seq ? my.game.seq.includes(client.id) : false) || client.robot;
+	let i, j, key;
 	
 	if(!my.game.boards) return;
 	if(!my.game.answers) return;
@@ -167,9 +175,9 @@ exports.submit = function(client, text, data){
 			jx = Number(data[1]), jy = Number(data[2]);
 			my.game.prisoners[key] = text;
 			my.game.answers[key] = false;
-			for(i=0; i<obj.length; i++){
+			for(let i=0; i<obj.length; i++){
 				if(mbj = mbjs[`${jx},${jy}`]){
-					for(j in mbj){
+					for(let j in mbj){
 						key = [ data[0], mbj[j].x, mbj[j].y, mbj[j].dir ];
 						if(++mbj[j].count == mbj[j].len){
 							if(v = my.game.answers[key.join(',')]) setTimeout(my.submit, 1, client, v, key);
@@ -196,19 +204,19 @@ exports.submit = function(client, text, data){
 	}
 };
 exports.getScore = function(text, delay){
-	var my = this;
-	var rank = my.game.hum - my.game.primary + 3;
-	var tr = 1 - delay / my.game.roundTime;
-	var score = (rank * rank * 3) * ( 0.5 + 0.5 * tr );
+	const my = this;
+	let rank = my.game.hum - my.game.primary + 3;
+	let tr = 1 - delay / my.game.roundTime;
+	let score = (rank * rank * 3) * ( 0.5 + 0.5 * tr );
 
 	return Math.round(score * my.game.themeBonus);
 };
 /*exports.readyRobot = function(robot){
-	var my = this;
-	var level = robot.level;
-	var delay, text;
-	var board, data, obj;
-	var i;
+	const my = this;
+	let level = robot.level;
+	let delay, text;
+	let board, data, obj;
+	let i;
 	
 	if(my.game.late) return;
 	clearTimeout(robot._timerSeek);
@@ -218,7 +226,7 @@ exports.getScore = function(text, delay){
 	if(Math.random() < ROBOT_CATCH_RATE[level]){
 		robot._timerCatch = false;
 		board = my.game.boards[robot._board];
-		for(i in board){
+		for(let i in board){
 			data = board[i];
 			key = `${robot._board},${data[0]},${data[1]},${data[2]}`;
 			if(obj = my.game.answers[key]){

@@ -16,11 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-﻿var Const = require('../../const');
-var Lizard = require('../../sub/lizard');
-var DB;
-var DIC;
-var ROOM;
+/**
+ * 볕뉘 수정사항:
+ * var 에서 const/const 로 변수 변경
+ * kkutu-lib 모듈에 호환되도록 수정
+ */
+
+const Const = require('../const');
+//볕뉘 수정
+const lib = require('kkutu-lib');
+const Lizard = lib.lizard;
+//볕뉘 수정 끝
+let DB;
+let DIC;
+let ROOM;
 
 exports.init = function(_DB, _DIC, _ROOM){
 	DB = _DB;
@@ -28,29 +37,29 @@ exports.init = function(_DB, _DIC, _ROOM){
 	ROOM = _ROOM;
 };
 exports.getTitle = function(){
-	var R = new Lizard.Tail();
-	var my = this;
+	const R = new Lizard.Tail();
+	const my = this;
 	
 	return R;
 };
 exports.roundReady = function(){
-	var my = this;
+	const my = this;
 	
 };
 exports.turnStart = function(){
-	var my = this;
+	const my = this;
 	
 };
 exports.turnEnd = function(){
-	var my = this;
+	const my = this;
 	
 };
 exports.submit = function(client, text, data){
-	var my = this;
+	const my = this;
 	
 };
 exports.getScore = function(text, delay){
-	var my = this;
+	const my = this;
 	
 	
 

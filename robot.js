@@ -16,18 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-var DB	 = require("../Web/db");
-var len = Number(process.argv[2] || 10);
+/**
+ * 볕뉘 수정사항:
+ * var 에서 let/const 로 변수 변경
+ */
+const DB	 = require("./db");
+const len = Number(process.argv[2] || 10);
 
 DB.ready = function(){
-	var rank = 0;
-	var phit = 0;
+	let rank = 0;
+	let phit = 0;
 	
 	DB.kkutu['ko'].find([ 'hit', { $gt: 0 } ]).sort([ 'hit', -1 ]).limit(len).on(function($res){
-		var i, $o, c;
-		var res = [];
+		let i, $o, c;
+		let res = [];
 		
-		for(i in $res){
+		for(let i in $res){
 			$o = $res[i];
 			if(phit == $o.hit){
 				c = rank;

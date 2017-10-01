@@ -16,25 +16,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-var WebSocket = require('ws');
-var File = require('fs');
-var Const = require("./const");
-var Server = new WebSocket.Server({
+/**
+ * 볕뉘 수정사항:
+ * var 에서 let/const 로 변수 변경
+ * kkutu-lib 모듈에 호환되도록 수정
+ */
+
+const WebSocket = require('ws');
+const File = require('fs');
+const Const = require("./const");
+const Server = new WebSocket.Server({
 	port: global.test ? (Const.TEST_PORT + 416) : process.env['KKUTU_PORT'],
 	perMessageDeflate: false
 });
-var Master = require('./master');
-var KKuTu = require('./kkutu');
+const Master = require('./master');
+const KKuTu = require('./kkutu');
+//볕뉘 수정
 const lib = require('kkutu-lib');
-var Lizard = lib.lizard;
-var MainDB = require('./db');
-var JLog = lib.jjlog;
-var GLOBAL = require('./global.json');
+const Lizard = lib.lizard;
+const MainDB = require('./db');
+const JLog = lib.jjlog;
+//볕뉘 수정 끝
+const GLOBAL = require('./global.json');
 
-var DIC = {};
-var DNAME = {};
-var ROOM = {};
-var RESERVED = {};
+const DIC = {};
+const DNAME = {};
+const ROOM = {};
+const RESERVED = {};
 
 const CHAN = process.env['CHANNEL'];
 const DEVELOP = Master.DEVELOP;
@@ -46,9 +54,9 @@ const MODE_LENGTH = Master.MODE_LENGTH;
 JLog.info(`<< KKuTu Server:${Server.options.port} >>`);
 
 process.on('uncaughtException', function(err){
-	var text = `${process.env['KKUTU_PORT']} [${new Date().toLocaleString()}] ERROR: ${err.toString()}\n${err.stack}`;
+	let text = `${process.env['KKUTU_PORT']} [${new Date().toLocaleString()}] ERROR: ${err.toString()}\n${err.stack}`;
 	
-	for(var i in DIC){
+	for(let i in DIC){
 		DIC[i].send('dying');
 	}
 	File.appendFile("../KKUTU_ERROR.log", text, function(res){
@@ -92,10 +100,10 @@ MainDB.ready = function(){
 	KKuTu.init(MainDB, DIC, ROOM, GUEST_PERMISSION);
 };
 Server.on('connection', function(socket){
-	var chunk = socket.upgradeReq.url.slice(1).split('&');
-	var key = chunk[0];
-	var reserve = RESERVED[key] || {}, room;
-	var $c;
+	let chunk = socket.upgradeReq.url.slice(1).split('&');
+	let key = chunk[0];
+	let reserve = RESERVED[key] || {}, room;
+	let $c;
 	
 	socket.on('error', function(err){
 		JLog.warn("Error on #" + key + " on ws: " + err.toString());
@@ -157,9 +165,9 @@ Server.on('error', function(err){
 	JLog.warn("Error on ws: " + err.toString());
 });
 KKuTu.onClientMessage = function($c, msg){
-	var stable = true;
-	var temp;
-	var now = (new Date()).getTime();
+	let stable = true;
+	let temp;
+	let now = (new Date()).getTime();
 	
 	if(!msg) return;
 	

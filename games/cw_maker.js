@@ -16,23 +16,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-﻿var Prompt = require('prompt');
-var DB = require('../db');
-var Const = require('../const');
+/**
+ * 볕뉘 수정사항:
+ * var 에서 let/const 로 변수 변경
+ * kkutu-lib 모듈에 호환되도록 수정
+ */
+
+const Prompt = require('prompt');
+const DB = require('../db');
+const Const = require('../const');
+//볕뉘 수정
 const lib = require('kkutu-lib');
-var Lizard = lib.lizard;
-var LANG = 'ko';
+const Lizard = lib.lizard;
+//볕뉘 수정 끝
+let LANG = 'ko';
 
 Prompt.start();
 DB.ready = function(){
-	var i;
+	let i;
 	
-	for(i in MAPS){
+	for(let i in MAPS){
 		MC[MAPS[i].name] = 0;
 		MAPS[i].queue = MAPS[i].queue.split(' ').map(function(item){ return item.split(''); });
 	}
 	DB.kkutu_cw[LANG].find().on(function($res){
-		var j, lis, q;
+		let j, lis, q;
 		
 		for(i in $res){
 			MC[$res[i].map]++;
@@ -46,11 +54,11 @@ DB.ready = function(){
 	});
 	function doMining(){
 		getBoard(LANG).then(function(data){
-			var j, o, s, t;
-			var res = [];
+			let j, o, s, t;
+			let res = [];
 			
 			console.log(data.map.name, "\n  0 1 2 3 4 5 6 7");
-			for(i=0; i<8; i++){
+			for(let i=0; i<8; i++){
 				s = i + " ";
 				for(j=0; j<8; j++){
 					if(o = data.board[`${j},${i}`]){
@@ -62,10 +70,10 @@ DB.ready = function(){
 				console.log(s);
 			}
 			console.log("\007");
-			for(i in data.map.queue){
+			for(let i in data.map.queue){
 				s = data.map.queue[i];
 				t = data.board[`${s[0]},${s[1]}`];
-				for(j in t.chain){
+				for(let j in t.chain){
 					o = t.chain[j];
 					if(o.pos[2] == s[2]) break;
 				}
@@ -82,8 +90,8 @@ DB.ready = function(){
 		});
 	}
 };
-var MC = {};
-var MAPS = [
+const MC = {};
+const MAPS = [
 	{ name: "강아지",
 		queue: "5003 1103 0202 6202 4303 0403 2502 3605 0213 1013 2412 3012 3512 4212 4612 6212 6612 7013 7413"
 	},
@@ -194,9 +202,9 @@ function getMap(){
 	/* 희소 행렬 표기법
 		[ x, y, 세로?, 길이 ]
 	*/
-	var i, li, lv = 99999999;
+	let i, li, lv = 99999999;
 	
-	for(i in MAPS){
+	for(let i in MAPS){
 		if(lv > MC[MAPS[i].name]){
 			li = i;
 			lv = MC[MAPS[i].name];
@@ -205,21 +213,21 @@ function getMap(){
 	return MAPS[li];
 }
 function getBoard(lang){
-	var R = new Lizard.Tail();
-	var MEAN = [ 'mean', new RegExp("^.{9}[^=→][^\.]{15}") ];
-	var NO_BUL = new RegExp("^(500|210|120|10)$");
-	var board = {};
-	var proc = [];
-	var map = getMap();
-	var queue = map.queue.slice(0);
-	var regCache = {};
+	const R = new Lizard.Tail();
+	const MEAN = [ 'mean', new RegExp("^.{9}[^=→][^\.]{15}") ];
+	const NO_BUL = new RegExp("^(500|210|120|10)$");
+	let board = {};
+	let proc = [];
+	let map = getMap();
+	let queue = map.queue.slice(0);
+	let regCache = {};
 	
 	function process(){
-		var i, m = queue.shift();
-		var arg = [];
-		var reg = "";
-		var p, k;
-		var mapLen = queue.length;
+		let i, m = queue.shift();
+		let arg = [];
+		let reg = "";
+		let p, k;
+		let mapLen = queue.length;
 		
 		console.log("[PROCESS] QUEUE: " + mapLen);
 		if(!m){
@@ -227,7 +235,7 @@ function getBoard(lang){
 			return;
 		}
 		p = [ m[0], m[1] ];
-		for(i=0; i<m[3]; i++){
+		for(let i=0; i<m[3]; i++){
 			k = p.join(',');
 			if(board[k]){
 				arg.push(board[k].chain);
@@ -254,16 +262,16 @@ function getBoard(lang){
 			onDBFound(regCache[reg].shift());
 		});
 		function onDBFound($doc){
-			var obj = {};
-			var pick = $doc; // hit 순으로 하나씩 뽑자.
-			var j, l, n;
+			let obj = {};
+			let pick = $doc; // hit 순으로 하나씩 뽑자.
+			let j, l, n;
 			
 			if(pick && !words.includes(pick._id)){
 				obj.word = pick._id;
 				obj.mean = pick.mean;
 				obj.pos = m;
 				p = [ m[0], m[1] ];
-				for(j=0; j<m[3]; j++){
+				for(let j=0; j<m[3]; j++){
 					k = p.join(',');
 					if(!board[k]) board[k] = { chain: {}, char: obj.word.charAt(j) };
 					board[k].chain[obj.word] = obj;
@@ -272,12 +280,12 @@ function getBoard(lang){
 				words.push(obj.word);
 			}else{
 				queue.push(m);
-				for(j in arg){
-					for(n in arg[j]){
+				for(let j in arg){
+					for(let n in arg[j]){
 						// arg[j][k]를 지운다
 						queue.push(m = arg[j][n].pos);
 						p = [ m[0], m[1] ];
-						for(l=0; l<m[3]; l++){
+						for(let l=0; l<m[3]; l++){
 							k = p.join(',');
 							delete board[k].chain[n];
 							if(!Object.keys(board[k].chain).length) delete board[k];

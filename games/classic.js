@@ -16,11 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-var Const = require('../const');
+/**
+ * 볕뉘 수정사항:
+ * var 에서 let/const 로 변수 변경
+ * kkutu-lib 모듈에 호환되도록 수정
+ */
+
+const Const = require('../const');
+//볕뉘 수정
 const lib = require('kkutu-lib');
-var Lizard = lib.lizard;
-var DB;
-var DIC;
+const Lizard = lib.lizard;
+//볕뉘 수정 끝
+let DB;
+let DIC;
 
 const ROBOT_START_DELAY = [ 1200, 800, 400, 200, 0 ];
 const ROBOT_TYPE_COEF = [ 1250, 750, 500, 250, 0 ];
@@ -36,11 +44,11 @@ exports.init = function(_DB, _DIC){
 	DIC = _DIC;
 };
 exports.getTitle = function(){
-	var R = new Lizard.Tail();
-	var my = this;
-	var l = my.rule;
-	var EXAMPLE;
-	var eng, ja;
+	const R = new Lizard.Tail();
+	const my = this;
+	let l = my.rule;
+	let EXAMPLE;
+	let eng, ja;
 	
 	if(!l){
 		R.go("undefinedd");
@@ -80,7 +88,7 @@ exports.getTitle = function(){
 			(l.lang == "ko") ? [ 'type', Const.KOR_GROUP ] : [ '_id', Const.ENG_ID ]
 			// '$where', eng+"this._id.length == " + Math.max(2, my.round) + " && this.hit <= " + h
 		).limit(20).on(function($md){
-			var list;
+			let list;
 			
 			if($md.length){
 				list = shuffle($md);
@@ -97,11 +105,11 @@ exports.getTitle = function(){
 		});
 	}
 	function checkTitle(title){
-		var R = new Lizard.Tail();
-		var i, list = [];
-		var len;
+		let R = new Lizard.Tail();
+		let i, list = [];
+		let len;
 		
-		/* ���ϰ� �ʹ� �ɸ��ٸ� �ּ��� Ǯ��.
+		/* 부하가 너무 걸린다면 주석을 풀자.
 		R.go(true);
 		return R;
 		*/
@@ -109,7 +117,7 @@ exports.getTitle = function(){
 			R.go(EXAMPLE);
 		}else{
 			len = title.length;
-			for(i=0; i<len; i++) list.push(getAuto.call(my, title[i], getSubChar.call(my, title[i]), 1));
+			for(let i=0; i<len; i++) list.push(getAuto.call(my, title[i], getSubChar.call(my, title[i]), 1));
 			
 			Lizard.all(list).then(function(res){
 				for(i in res) if(!res[i]) return R.go(EXAMPLE);
@@ -124,7 +132,7 @@ exports.getTitle = function(){
 	return R;
 };
 exports.roundReady = function(){
-	var my = this;
+	const my = this;
 	if(!my.game.title) return;
 	
 	clearTimeout(my.game.turnTimer);
@@ -149,9 +157,9 @@ exports.roundReady = function(){
 	}
 };
 exports.turnStart = function(force){
-	var my = this;
-	var speed;
-	var si;
+	const my = this;
+	let speed;
+	let si;
 	
 	if(!my.game.chain) return;
 	my.game.roundTime = Math.min(my.game.roundTime, Math.max(10000, 150000 - my.game.chain.length * 1500));
@@ -181,9 +189,9 @@ exports.turnStart = function(force){
 	}
 };
 exports.turnEnd = function(){
-	var my = this;
-	var target;
-	var score;
+	const my = this;
+	let target;
+	let score;
 	
 	if(!my.game.seq) return;
 	target = DIC[my.game.seq[my.game.turn]] || my.game.seq[my.game.turn];
@@ -209,10 +217,10 @@ exports.turnEnd = function(){
 	clearTimeout(my.game.robotTimer);
 };
 exports.submit = function(client, text){
-	var score, l, t;
-	var my = this;
-	var tv = (new Date()).getTime();
-	var mgt = my.game.seq[my.game.turn];
+	let score, l, t;
+	const my = this;
+	let tv = (new Date()).getTime();
+	let mgt = my.game.seq[my.game.turn];
 	
 	if(!mgt) return;
 	if(!mgt.robot) if(mgt != client.id) return;
@@ -225,9 +233,9 @@ exports.submit = function(client, text){
 	my.game.loading = true;
 	function onDB($doc){
 		if(!my.game.chain) return;
-		var preChar = getChar.call(my, text);
-		var preSubChar = getSubChar.call(my, preChar);
-		var firstMove = my.game.chain.length < 1;
+		let preChar = getChar.call(my, text);
+		let preSubChar = getSubChar.call(my, preChar);
+		let firstMove = my.game.chain.length < 1;
 		
 		function preApproved(){
 			function approved(){
@@ -291,9 +299,9 @@ exports.submit = function(client, text){
 		}
 	}
 	function isChainable(){
-		var type = Const.GAME_TYPE[my.mode];
-		var char = my.game.char, subChar = my.game.subChar;
-		var l = char.length;
+		let type = Const.GAME_TYPE[my.mode];
+		let char = my.game.char, subChar = my.game.subChar;
+		let l = char.length;
 		
 		if(!text) return false;
 		if(text.length <= l) return false;
@@ -311,9 +319,9 @@ exports.submit = function(client, text){
 	).on(onDB);
 };
 exports.getScore = function(text, delay, ignoreMission){
-	var my = this;
-	var tr = 1 - delay / my.game.turnTime;
-	var score, arr;
+	const my = this;
+	let tr = 1 - delay / my.game.turnTime;
+	let score, arr;
 	
 	if(!text || !my.game.chain || !my.game.dic) return 0;
 	score = Const.getPreScore(text, my.game.chain, tr);
@@ -326,13 +334,13 @@ exports.getScore = function(text, delay, ignoreMission){
 	return Math.round(score);
 };
 exports.readyRobot = function(robot){
-	var my = this;
-	var level = robot.level;
-	var delay = ROBOT_START_DELAY[level];
-	var ended = {};
-	var w, text, i;
-	var lmax;
-	var isRev = Const.GAME_TYPE[my.mode] == "KAP";
+	const my = this;
+	let level = robot.level;
+	let delay = ROBOT_START_DELAY[level];
+	let ended = {};
+	let w, text, i;
+	let lmax;
+	let isRev = Const.GAME_TYPE[my.mode] == "KAP";
 	
 	getAuto.call(my, my.game.char, my.game.subChar, 2).then(function(list){
 		if(list.length){
@@ -342,13 +350,13 @@ exports.readyRobot = function(robot){
 				if(level >= 3 && !robot._done.length){
 					if(Math.random() < 0.5) list.sort(function(a, b){ return b._id.length - a._id.length; });
 					if(list[0]._id.length < 8 && my.game.turnTime >= 2300){
-						for(i in list){
+						for(let i in list){
 							w = list[i]._id.charAt(isRev ? 0 : (list[i]._id.length - 1));
 							if(!ended.hasOwnProperty(w)) ended[w] = [];
 							ended[w].push(list[i]);
 						}
 						getWishList(Object.keys(ended)).then(function(key){
-							var v = ended[key];
+							let v = ended[key];
 							
 							if(!v) denied();
 							else pickList(v);
@@ -380,11 +388,11 @@ exports.readyRobot = function(robot){
 		setTimeout(my.turnRobot, delay, robot, text);
 	}
 	function getWishList(list){
-		var R = new Lizard.Tail();
-		var wz = [];
-		var res;
+		const R = new Lizard.Tail();
+		let wz = [];
+		let res;
 		
-		for(i in list) wz.push(getWish(list[i]));
+		for(let i in list) wz.push(getWish(list[i]));
 		Lizard.all(wz).then(function($res){
 			if(!my.game.chain) return;
 			$res.sort(function(a, b){ return a.length - b.length; });
@@ -397,7 +405,7 @@ exports.readyRobot = function(robot){
 		return R;
 	}
 	function getWish(char){
-		var R = new Lizard.Tail();
+		const R = new Lizard.Tail();
 		
 		DB.kkutu[my.rule.lang].find([ '_id', new RegExp(isRev ? `.${char}$` : `^${char}.`) ]).limit(10).on(function($res){
 			R.go({ char: char, length: $res.length });
@@ -406,24 +414,24 @@ exports.readyRobot = function(robot){
 	}
 };
 function getMission(l){
-	var arr = (l == "ko") ? Const.MISSION_ko : Const.MISSION_en;
+	let arr = (l == "ko") ? Const.MISSION_ko : Const.MISSION_en;
 	
 	if(!arr) return "-";
 	return arr[Math.floor(Math.random() * arr.length)];
 }
 function getAuto(char, subc, type){
 	/* type
-		0 ������ �ܾ� �ϳ�
-		1 ���� ����
-		2 �ܾ� ���
+		0 무작위 단어 하나
+		1 존재 여부
+		2 단어 목록
 	*/
-	var my = this;
-	var R = new Lizard.Tail();
-	var gameType = Const.GAME_TYPE[my.mode];
-	var adv, adc;
-	var key = gameType + "_" + keyByOptions(my.opts);
-	var MAN = DB.kkutu_manner[my.rule.lang];
-	var bool = type == 1;
+	const my = this;
+	const R = new Lizard.Tail();
+	let gameType = Const.GAME_TYPE[my.mode];
+	let adv, adc;
+	let key = gameType + "_" + keyByOptions(my.opts);
+	let MAN = DB.kkutu_manner[my.rule.lang];
+	let bool = type == 1;
 	
 	adc = char + (subc ? ("|"+subc) : "");
 	switch(gameType){
@@ -446,7 +454,7 @@ function getAuto(char, subc, type){
 	if(!char){
 		console.log(`Undefined char detected! key=${key} type=${type} adc=${adc}`);
 	}
-	MAN.findOne([ '_id', char || "��" ]).on(function($mn){
+	MAN.findOne([ '_id', char || "★" ]).on(function($mn){
 		if($mn && bool){
 			if($mn[key] === null) produce();
 			else R.go($mn[key]);
@@ -455,9 +463,9 @@ function getAuto(char, subc, type){
 		}
 	});
 	function produce(){
-		var aqs = [[ '_id', new RegExp(adv) ]];
-		var aft;
-		var lst;
+		const aqs = [[ '_id', new RegExp(adv) ]];
+		let aft;
+		let lst;
 		
 		if(!my.opts.injeong) aqs.push([ 'flag', { '$nand': Const.KOR_FLAG.INJEONG } ]);
 		if(my.rule.lang == "ko"){
@@ -503,7 +511,7 @@ function getAuto(char, subc, type){
 	return R;
 }
 function keyByOptions(opts){
-	var arr = [];
+	let arr = [];
 	
 	if(opts.injeong) arr.push('X');
 	if(opts.loanword) arr.push('L');
@@ -511,15 +519,15 @@ function keyByOptions(opts){
 	return arr.join('');
 }
 function shuffle(arr){
-	var i, r = [];
+	let i, r = [];
 	
-	for(i in arr) r.push(arr[i]);
+	for(let i in arr) r.push(arr[i]);
 	r.sort(function(a, b){ return Math.random() - 0.5; });
 	
 	return r;
 }
 function getChar(text){
-	var my = this;
+	const my = this;
 	
 	switch(Const.GAME_TYPE[my.mode]){
 		case 'EKT': return text.slice(text.length - 3);
@@ -530,11 +538,11 @@ function getChar(text){
 	}
 };
 function getSubChar(char){
-	var my = this;
-	var r;
-	var c = char.charCodeAt();
-	var k;
-	var ca, cb, cc;
+	const my = this;
+	let r;
+	let c = char.charCodeAt();
+	let k;
+	let ca, cb, cc;
 	
 	switch(Const.GAME_TYPE[my.mode]){
 		case "EKT":
@@ -546,12 +554,12 @@ function getSubChar(char){
 			ca = [ Math.floor(k/28/21), Math.floor(k/28)%21, k%28 ];
 			cb = [ ca[0] + 0x1100, ca[1] + 0x1161, ca[2] + 0x11A7 ];
 			cc = false;
-			if(cb[0] == 4357){ // ������ ��, ��
+			if(cb[0] == 4357){ // ㄹ에서 ㄴ, ㅇ
 				cc = true;
 				if(RIEUL_TO_NIEUN.includes(cb[1])) cb[0] = 4354;
 				else if(RIEUL_TO_IEUNG.includes(cb[1])) cb[0] = 4363;
 				else cc = false;
-			}else if(cb[0] == 4354){ // ������ ��
+			}else if(cb[0] == 4354){ // ㄴ에서 ㅇ
 				if(NIEUN_TO_IEUNG.indexOf(cb[1]) != -1){
 					cb[0] = 4363;
 					cc = true;

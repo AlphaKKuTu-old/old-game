@@ -16,28 +16,36 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-var Cluster = require("cluster");
-var File = require('fs');
-var WebSocket = require('ws');
+/**
+ * 볕뉘 수정사항:
+ * var 에서 let/const 로 변수 변경
+ * kkutu-lib 모듈에 호환되도록 수정
+ */
+
+const Cluster = require("cluster");
+const File = require('fs');
+const WebSocket = require('ws');
 // var Heapdump = require("heapdump");
-var KKuTu = require('./kkutu');
-var GLOBAL = require("./global.json");
-var Const = require("./const");
+const KKuTu = require('./kkutu');
+const GLOBAL = require("./global.json");
+const Const = require("./const");
+//볕뉘 수정
 const lib = require('kkutu-lib');
-var JLog = lib.jjlog;
+const JLog = lib.jjlog;
+//볕뉘 수정 끝
 
-var MainDB;
+let MainDB;
 
-var Server;
-var DIC = {};
-var DNAME = {};
-var ROOM = {};
+let Server;
+let DIC = {};
+let DNAME = {};
+let ROOM = {};
 
-var T_ROOM = {};
-var T_USER = {};
+let T_ROOM = {};
+let T_USER = {};
 
-var SID;
-var WDIC = {};
+let SID;
+let WDIC = {};
 
 const DEVELOP = exports.DEVELOP = global.test || false;
 const GUEST_PERMISSION = exports.GUEST_PERMISSION = {
@@ -59,7 +67,7 @@ const MODE_LENGTH = exports.MODE_LENGTH = Const.GAME_TYPE.length;
 const PORT = process.env['KKUTU_PORT'];
 
 process.on('uncaughtException', function(err){
-	var text = `:${PORT} [${new Date().toLocaleString()}] ERROR: ${err.toString()}\n${err.stack}\n`;
+	let text = `:${PORT} [${new Date().toLocaleString()}] ERROR: ${err.toString()}\n${err.stack}\n`;
 	
 	File.appendFile("/jjolol/KKUTU_ERROR.log", text, function(res){
 		JLog.error(`ERROR OCCURRED ON THE MASTER!`);
@@ -67,7 +75,7 @@ process.on('uncaughtException', function(err){
 	});
 });
 function processAdmin(id, value){
-	var cmd, temp, i, j;
+	let cmd, temp, i, j;
 	
 	value = value.replace(/^(#\w+\s+)?(.+)/, function(v, p1, p2){
 		if(p1) cmd = p1.slice(1).trim();
@@ -117,7 +125,7 @@ function processAdmin(id, value){
 	return value;
 }
 function checkTailUser(id, place, msg){
-	var temp;
+	let temp;
 	
 	if(temp = T_USER[id]){
 		if(!DIC[temp]){
@@ -129,12 +137,12 @@ function checkTailUser(id, place, msg){
 }
 function narrateFriends(id, friends, stat){
 	if(!friends) return;
-	var fl = Object.keys(friends);
+	let fl = Object.keys(friends);
 	
 	if(!fl.length) return;
 	
 	MainDB.users.find([ '_id', { $in: fl } ], [ 'server', /^\w+$/ ]).limit([ 'server', true ]).on(function($fon){
-		var i, sf = {}, s;
+		let i, sf = {}, s;
 		
 		for(i in $fon){
 			if(!sf[s = $fon[i].server]) sf[s] = [];
@@ -153,7 +161,7 @@ function narrateFriends(id, friends, stat){
 	});
 }
 Cluster.on('message', function(worker, msg){
-	var temp;
+	let temp;
 	
 	switch(msg.type){
 		case "admin":
@@ -221,7 +229,7 @@ Cluster.on('message', function(worker, msg){
 				JLog.warn(`Wrong room-go id=${msg.id}&target=${msg.target}`);
 				if(ROOM[msg.id] && ROOM[msg.id].players){
 					// 이 때 수동으로 지워준다.
-					var x = ROOM[msg.id].players.indexOf(msg.target);
+					let x = ROOM[msg.id].players.indexOf(msg.target);
 					
 					if(x != -1){
 						ROOM[msg.id].players.splice(x, 1);
@@ -233,14 +241,14 @@ Cluster.on('message', function(worker, msg){
 			break;
 		case "user-publish":
 			if(temp = DIC[msg.data.id]){
-				for(var i in msg.data){
+				for(let i in msg.data){
 					temp[i] = msg.data[i];
 				}
 			}
 			break;
 		case "room-publish":
 			if(temp = ROOM[msg.data.room.id]){
-				for(var i in msg.data.room){
+				for(let i in msg.data.room){
 					temp[i] = msg.data.room[i];
 				}
 				temp.password = msg.password;
@@ -249,8 +257,8 @@ Cluster.on('message', function(worker, msg){
 			break;
 		case "room-expired":
 			if(msg.create && ROOM[msg.id]){
-				for(var i in ROOM[msg.id].players){
-					var $c = DIC[ROOM[msg.id].players[i]];
+				for(let i in ROOM[msg.id].players){
+					let $c = DIC[ROOM[msg.id].players[i]];
 					
 					if($c) $c.send('roomStuck');
 				}
@@ -276,8 +284,8 @@ exports.init = function(_SID, CHAN){
 			perMessageDeflate: false
 		});
 		Server.on('connection', function(socket){
-			var key = socket.upgradeReq.url.slice(1);
-			var $c;
+			let key = socket.upgradeReq.url.slice(1);
+			let $c;
 			
 			socket.on('error', function(err){
 				JLog.warn("Error on #" + key + " on ws: " + err.toString());
@@ -370,9 +378,9 @@ exports.init = function(_SID, CHAN){
 	};
 };
 KKuTu.onClientMessage = function($c, msg){
-	var stable = true;
-	var temp;
-	var now = (new Date()).getTime();
+	let stable = true;
+	let temp;
+	let now = (new Date()).getTime();
 	
 	if(!msg) return;
 	
