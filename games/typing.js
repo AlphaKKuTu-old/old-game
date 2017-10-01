@@ -16,22 +16,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-var Const = require('../const');
-var TYL = require('./typing_const');
-const lib = require('kkutu-lib');
-var Lizard = lib.lizard;
-var DB;
-var DIC;
+/**
+ * 볕뉘 수정사항:
+ * var 에서 let/const 로 변수 변경
+ * kkutu-lib 모듈에 호환되도록 수정
+ */
 
-var LIST_LENGTH = 200;
-var DOUBLE_VOWELS = [ 9, 10, 11, 14, 15, 16, 19 ];
-var DOUBLE_TAILS = [ 3, 5, 6, 9, 10, 11, 12, 13, 14, 15, 18 ];
+const Const = require('../const');
+const TYL = require('./typing_const');
+//볕뉘 수정
+const lib = require('kkutu-lib');
+const Lizard = lib.lizard;
+//볕뉘 수정 끝
+let DB;
+let DIC;
+
+const LIST_LENGTH = 200;
+const DOUBLE_VOWELS = [ 9, 10, 11, 14, 15, 16, 19 ];
+const DOUBLE_TAILS = [ 3, 5, 6, 9, 10, 11, 12, 13, 14, 15, 18 ];
 
 function traverse(func){
-	var my = this;
-	var i, o;
+	const my = this;
+	let i, o;
 	
-	for(i in my.game.seq){
+	for(let i in my.game.seq){
 		if(!(o = DIC[my.game.seq[i]])) continue;
 		if(!o.game) continue;
 		func(o);
@@ -42,22 +50,22 @@ exports.init = function(_DB, _DIC){
 	DIC = _DIC;
 };
 exports.getTitle = function(){
-	var R = new Lizard.Tail();
-	var my = this;
-	var i, j;
+	const R = new Lizard.Tail();
+	const my = this;
+	let i, j;
 	
 	if(my.opts.proverb) pick(TYL.PROVERBS[my.rule.lang]);
 	else DB.kkutu[my.rule.lang].find([ '_id', /^.{2,5}$/ ], [ 'hit', { $gte: 1 } ]).limit(416).on(function($res){
 		pick($res.map(function(item){ return item._id; }));
 	});
 	function pick(list){
-		var data = [];
-		var len = list.length;
-		var arr;
+		let data = [];
+		let len = list.length;
+		let arr;
 		
-		for(i=0; i<my.round; i++){
+		for(let i=0; i<my.round; i++){
 			arr = [];
-			for(j=0; j<LIST_LENGTH; j++){
+			for(let j=0; j<LIST_LENGTH; j++){
 				arr.push(list[Math.floor(Math.random() * len)]);
 			}
 			data.push(arr);
@@ -71,8 +79,8 @@ exports.getTitle = function(){
 	return R;
 };
 exports.roundReady = function(){
-	var my = this;
-	var scores = {};
+	const my = this;
+	let scores = {};
 	
 	if(!my.game.lists) return;
 	
@@ -93,7 +101,7 @@ exports.roundReady = function(){
 	}
 };
 exports.turnStart = function(){
-	var my = this;
+	const my = this;
 	
 	my.game.late = false;
 	traverse.call(my, function(o){
@@ -105,9 +113,9 @@ exports.turnStart = function(){
 	my.byMaster('turnStart', { roundTime: my.game.roundTime }, true);
 };
 exports.turnEnd = function(){
-	var my = this;
-	var spl = {};
-	var sv;
+	const my = this;
+	let spl = {};
+	let sv;
 	
 	my.game.late = true;
 	traverse.call(my, function(o){
@@ -122,8 +130,8 @@ exports.turnEnd = function(){
 	my.game._rrt = setTimeout(my.roundReady, (my.game.round == my.round) ? 3000 : 10000);
 };
 exports.submit = function(client, text){
-	var my = this;
-	var score;
+	const my = this;
+	let score;
 	
 	if(!client.game) return;
 	
@@ -146,13 +154,13 @@ exports.submit = function(client, text){
 	if(!my.game.clist[++client.game.index]) client.game.index = 0;
 };
 exports.getScore = function(text){
-	var my = this;
-	var i, len = text.length;
-	var r = 0, s, t;
+	const my = this;
+	let i, len = text.length;
+	let r = 0, s, t;
 	
 	switch(my.rule.lang){
 		case 'ko':
-			for(i=0; i<len; i++){
+			for(let i=0; i<len; i++){
 				s = text.charCodeAt(i);
 				if(s < 44032){
 					r++;

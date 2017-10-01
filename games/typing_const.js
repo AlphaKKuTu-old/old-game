@@ -25,10 +25,10 @@ exports.PROVERBS = {
 
 File.readFile(`${__dirname}/../proverbs.txt`, function(err, res){
 	if(err) throw Error(err.toString());
-	var db = res.toString().split('~~~');
+	let db = res.toString().split('~~~');
 	
 	db.forEach(function(item){
-		var lang = item.slice(0, 2);
+		let lang = item.slice(0, 2);
 		
 		exports.PROVERBS[lang] = item.slice(3).split('\r\n');	
 	});

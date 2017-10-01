@@ -16,11 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-var Const = require('../const');
+/**
+ * 볕뉘 수정사항:
+ * var 에서 let/const 로 변수 변경
+ * kkutu-lib 모듈에 호환되도록 수정
+ */
+
+const Const = require('../const');
+//볕뉘 수정
 const lib = require('kkutu-lib');
-var Lizard = lib.lizard;
-var DB;
-var DIC;
+const Lizard = lib.lizard;
+//볕뉘 수정 끝
+let DB;
+let DIC;
 
 const LANG_STATS = { 'ko': {
 	reg: /^[가-힣]{2,5}$/,
@@ -38,8 +46,8 @@ exports.init = function(_DB, _DIC){
 	DIC = _DIC;
 };
 exports.getTitle = function(){
-	var R = new Lizard.Tail();
-	var my = this;
+	const R = new Lizard.Tail();
+	const my = this;
 	
 	setTimeout(function(){
 		R.go("①②③④⑤⑥⑦⑧⑨⑩");
@@ -47,11 +55,11 @@ exports.getTitle = function(){
 	return R;
 };
 exports.roundReady = function(){
-	var my = this;
-	var words = [];
-	var conf = LANG_STATS[my.rule.lang];
-	var len = conf.len;
-	var i, w;
+	const my = this;
+	let words = [];
+	let conf = LANG_STATS[my.rule.lang];
+	let len = conf.len;
+	let i, w;
 	
 	clearTimeout(my.game.turnTimer);
 	my.game.round++;
@@ -78,7 +86,7 @@ exports.roundReady = function(){
 	}
 };
 exports.turnStart = function(){
-	var my = this;
+	const my = this;
 	
 	my.game.late = false;
 	my.game.roundAt = (new Date()).getTime();
@@ -88,7 +96,7 @@ exports.turnStart = function(){
 	}, true);
 };
 exports.turnEnd = function(){
-	var my = this;
+	const my = this;
 	
 	my.game.late = true;
 	
@@ -96,9 +104,9 @@ exports.turnEnd = function(){
 	my.game._rrt = setTimeout(my.roundReady, 3000);
 };
 exports.submit = function(client, text, data){
-	var my = this;
-	var play = (my.game.seq ? my.game.seq.includes(client.id) : false) || client.robot;
-	var score, i;
+	const my = this;
+	let play = (my.game.seq ? my.game.seq.includes(client.id) : false) || client.robot;
+	let score, i;
 	
 	if(!my.game.words) return;
 	if(!text) return;
@@ -113,13 +121,13 @@ exports.submit = function(client, text, data){
 	DB.kkutu[my.rule.lang].findOne([ '_id', text ]).limit([ '_id', true ]).on(function($doc){
 		if(!my.game.board) return;
 		
-		var newBoard = my.game.board;
-		var _newBoard = newBoard;
-		var wl;
+		let newBoard = my.game.board;
+		let _newBoard = newBoard;
+		let wl;
 		
 		if($doc){
 			wl = $doc._id.split('');
-			for(i in wl){
+			for(let i in wl){
 				newBoard = newBoard.replace(wl[i], "");
 				if(newBoard == _newBoard){ // 그런 글자가 없다.
 					client.chat(text);
@@ -161,13 +169,13 @@ exports.submit = function(client, text, data){
 	}*/
 };
 exports.getScore = function(text, delay){
-	var my = this;
+	const my = this;
 
 	return Math.round(Math.pow(text.length - 1, 1.6) * 8);
 };
 function getBoard(words, len){
-	var str = words.join("").split("");
-	var sl = str.length;
+	let str = words.join("").split("");
+	let sl = str.length;
 	
 	while(sl++ < len) str.push("　");
 	
