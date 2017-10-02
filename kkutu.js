@@ -380,7 +380,7 @@ exports.Client = function(socket, profile, sid){
 		my.publish('chat', { value: msg, notice: code ? true : false, code: code });
 	};
 	my.checkExpire = function(){
-		const now = new Date();
+		let now = new Date();
 		const d = now.getDate();
 		let i, expired = [];
 		let gr;
