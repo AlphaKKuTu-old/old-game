@@ -20,15 +20,38 @@
  * 볕뉘 수정사항:
  * var 에서 let/const 로 변수 변경
  * kkutu-lib 모듈에 호환되도록 수정
+ * HTTPS 대응코드 삽입
  */
 
 const WebSocket = require('ws');
 const File = require('fs');
 const Const = require("./const");
-const Server = new WebSocket.Server({
-	port: global.test ? (Const.TEST_PORT + 416) : process.env['KKUTU_PORT'],
-	perMessageDeflate: false
-});
+//볕뉘 수정
+const https = require('https');
+let Server;
+let HTTPS_Server
+
+if(Const.IS_SECURED) {
+	const options = {};
+	if(Const.SSL_OPTIONS.isPFX == true) {
+		options.pfx = File.readFileSync(Const.SSL_OPTIONS.PFX);
+	} else {
+		options.key = File.readFileSync(Const.SSL_OPTIONS.PRIVKEY);
+		options.cert = File.readFileSync(Const.SSL_OPTIONS.CERT);
+		if(Const.SSL_OPTIONS.isCA == true) {
+			options.ca = File.readFileSync(Const.SSL_OPTIONS.CA);
+		}
+	}
+	HTTPS_Server = https.createServer(options)
+		.listen(global.test ? (Const.TEST_PORT + 416) : process.env['KKUTU_PORT']);
+	Server = new WebSocket.Server({server: HTTPS_Server});
+} else {
+	Server = new WebSocket.Server({
+		port: global.test ? (Const.TEST_PORT + 416) : process.env['KKUTU_PORT'],
+		perMessageDeflate: false
+	});
+}
+//볕뉘 수정 끝
 const Master = require('./master');
 const KKuTu = require('./kkutu');
 //볕뉘 수정

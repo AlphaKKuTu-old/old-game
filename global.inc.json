@@ -12,5 +12,14 @@
 	"REDIS_PORT": 6379,
 	"REDIS_DB": 0,
 	"WS_KEY": "kkutu_test",
-	"CLUSTER_SLAVES": 1
+	"IS_SECURED": false,
+	"CLUSTER_SLAVES": 1,
+	"SSL_OPTIONS": {
+		"PRIVKEY": "Your SSL Private Key Here",
+		"CERT": "Your SSL Certificate Here",
+		"CA": "Your SSL CA-Bundle Here",
+		"PFX": "Your PFX Bundle Here",
+		"isPFX": false,
+		"isCA": false
+	}
 }
