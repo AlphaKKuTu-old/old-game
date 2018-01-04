@@ -26,13 +26,14 @@
 const WebSocket = require('ws');
 const File = require('fs');
 const Const = require("./const");
-//볕뉘 수정
 const https = require('https');
 let Server;
 let HTTPS_Server
+const lib = require('kkutu-lib');
+const Secure = lib.secure;
 
 if(Const.IS_SECURED) {
-	const options = secure(Const.SSL_OPTIONS);
+	const options = Secure(Const.SSL_OPTIONS);
 	HTTPS_Server = https.createServer(options)
 		.listen(global.test ? (Const.TEST_PORT + 416) : process.env['KKUTU_PORT']);
 	Server = new WebSocket.Server({server: HTTPS_Server});
@@ -42,15 +43,11 @@ if(Const.IS_SECURED) {
 		perMessageDeflate: false
 	});
 }
-//볕뉘 수정 끝
 const Master = require('./master');
 const KKuTu = require('./kkutu');
-//볕뉘 수정
-const lib = require('kkutu-lib');
 const Lizard = lib.lizard;
 const MainDB = require('./db');
 const JLog = lib.jjlog;
-//볕뉘 수정 끝
 const GLOBAL = require('./global.json');
 
 const DIC = {};

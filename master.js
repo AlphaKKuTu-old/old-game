@@ -26,18 +26,15 @@
 const Cluster = require("cluster");
 const File = require('fs');
 const WebSocket = require('ws');
-//볕뉘 수정
 const https = require('https');
 let HTTPS_Server;
-//볕뉘 수정 끝
 // var Heapdump = require("heapdump");
 const KKuTu = require('./kkutu');
 const GLOBAL = require("./global.json");
 const Const = require("./const");
-//볕뉘 수정
 const lib = require('kkutu-lib');
 const JLog = lib.jjlog;
-//볕뉘 수정 끝
+const Secure = lib.secure;
 
 let MainDB;
 
@@ -284,9 +281,8 @@ exports.init = function(_SID, CHAN){
 		JLog.success("Master DB is ready.");
 		
 		MainDB.users.update([ 'server', SID ]).set([ 'server', "" ]).on();
-		//볕뉘 수정
 		if(Const.IS_SECURED) {
-			const options = secure(Const.SSL_OPTIONS);
+			const options = Secure(Const.SSL_OPTIONS);
 			HTTPS_Server = https.createServer(options)
 				.listen(global.test ? (Const.TEST_PORT + 416) : process.env['KKUTU_PORT']);
 			Server = new WebSocket.Server({server: HTTPS_Server});
@@ -296,7 +292,6 @@ exports.init = function(_SID, CHAN){
 				perMessageDeflate: false
 			});
 		}
-		//볕뉘 수정 끝
 		Server.on('connection', function(socket){
 			let key = socket.upgradeReq.url.slice(1);
 			let $c;
@@ -305,9 +300,7 @@ exports.init = function(_SID, CHAN){
 				JLog.warn("Error on #" + key + " on ws: " + err.toString());
 			});
 			// 웹 서버
-			//볕뉘 수정 시작
 			if(socket.upgradeReq.url.match(new RegExp('^/'+GLOBAL.WS_KEY+'-[0-9]{1,5}$')) != null) {
-			//볕뉘 수정 끝
 				if(WDIC[key]) WDIC[key].socket.close();
 				WDIC[key] = new KKuTu.WebServer(socket);
 				JLog.info(`New web server #${key}`);
