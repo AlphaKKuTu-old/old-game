@@ -48,7 +48,7 @@ exports.OPTIONS = {
 	'str': { name: "Strict" },
 	'k32': { name: "Sami" },
 	'no2': { name: "No2" },
-	'alk': { name: "Charactor" }
+	'alk': { name: "Character" }
 };
 exports.MOREMI_PART = [ 'back', 'eye', 'mouth', 'shoes', 'clothes', 'head', 'lhand', 'rhand', 'front' ];
 exports.CATEGORIES = [ "all", "spec", "skin", "badge", "head", "eye", "mouth", "clothes", "hs", "back" ];
@@ -247,7 +247,7 @@ exports.KOR_STRICT = /(^|,)(1|INJEONG)($|,)/;
 exports.KOR_GROUP = new RegExp("(,|^)(" + [
 	"0", "1", "3", "7", "8", "11", "9",
 	"16", "15", "17", "2", "18", "20", "26", "19",
-	"INJEONG", "CHARACTOR"
+	"INJEONG", "CHARACTER"
 ].join('|') + ")(,|$)");
 exports.ENG_ID = /^[a-z]+$/i;
 exports.KOR_FLAG = {
@@ -256,7 +256,8 @@ exports.KOR_FLAG = {
 	SPACED: 4, // 띄어쓰기를 해야 하는 어휘
 	SATURI: 8, // 방언
 	OLD: 16, // 옛말
-	MUNHWA: 32 // 문화어
+	MUNHWA: 32, // 문화어
+	CHARACTER: 64 // 캐릭터
 };
 exports.WP_REWARD = function(){
 	return 10 + Math.floor(Math.random() * 91);
