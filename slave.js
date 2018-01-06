@@ -102,6 +102,8 @@ process.on('message', function(msg){
 		case "room-invalid":
 			delete ROOM[msg.room.id];
 			break;
+		case "axm:monitor":
+			break;
 		default:
 			JLog.warn(`Unhandled IPC message type: ${msg.type}`);
 	}
