@@ -15,17 +15,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
+  
 /**
  * 볕뉘 수정사항:
  * var 에서 let/const 로 변수 변경
- * kkutu-lib 모듈에 호환되도록 수정
  * HTTPS 대응코드 삽입
  */
+
 const GLOBAL = require("./global.json");
 
 exports.KKUTU_MAX = 400;
 exports.MAIN_PORTS = GLOBAL.MAIN_PORTS;
+exports.NAME = GLOBAL.SERVER_NAME;
 exports.TEST_PORT = 4040;
 exports.SPAM_CLEAR_DELAY = 1600;
 exports.SPAM_ADD_DELAY = 750;
@@ -36,10 +37,8 @@ exports.MAX_OBSERVER = 4;
 exports.TESTER = GLOBAL.ADMIN.concat([
 	"Input tester id here"
 ]);
-//볕뉘 수정
 exports.IS_SECURED = GLOBAL.IS_SECURED;
 exports.SSL_OPTIONS = GLOBAL.SSL_OPTIONS;
-//볕뉘 수정 끝
 exports.OPTIONS = {
 	'man': { name: "Manner" },
 	'ext': { name: "Injeong" },
@@ -48,7 +47,8 @@ exports.OPTIONS = {
 	'prv': { name: "Proverb" },
 	'str': { name: "Strict" },
 	'k32': { name: "Sami" },
-	'no2': { name: "No2" }
+	'no2': { name: "No2" },
+	'alk': { name: "Charactor" }
 };
 exports.MOREMI_PART = [ 'back', 'eye', 'mouth', 'shoes', 'clothes', 'head', 'lhand', 'rhand', 'front' ];
 exports.CATEGORIES = [ "all", "spec", "skin", "badge", "head", "eye", "mouth", "clothes", "hs", "back" ];
@@ -96,7 +96,7 @@ exports.RULE = {
 	},
 	'KKT': { lang: "ko",
 		rule: "Classic",
-		opts: [ "man", "ext", "mis", "loa", "str", "k32" ],
+		opts: [ "man", "ext", "mis", "loa", "str", "k32", "alk"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -104,7 +104,7 @@ exports.RULE = {
 	},
 	'KSH': { lang: "ko",
 		rule: "Classic",
-		opts: [ "man", "ext", "mis", "loa", "str" ],
+		opts: [ "man", "ext", "mis", "loa", "str", "alk"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -144,7 +144,7 @@ exports.RULE = {
 	},
 	'KAP': { lang: "ko",
 		rule: "Classic",
-		opts: [ "man", "ext", "mis", "loa", "str" ],
+		opts: [ "man", "ext", "mis", "loa", "str", "alk" ],
 		time: 1,
 		ai: true,
 		big: false,
@@ -216,6 +216,10 @@ exports.KO_INJEONG = [
 	"YRY", "KPO", "JLN", "JAN", "ZEL", "POK", "HAI",
 	"HSS", "KMV", "HDC", "HOS"
 ];
+exports.KO_CHARACTER = [
+	'ALK'
+];
+
 exports.EN_INJEONG = [
 	"LOL"
 ];
@@ -243,7 +247,7 @@ exports.KOR_STRICT = /(^|,)(1|INJEONG)($|,)/;
 exports.KOR_GROUP = new RegExp("(,|^)(" + [
 	"0", "1", "3", "7", "8", "11", "9",
 	"16", "15", "17", "2", "18", "20", "26", "19",
-	"INJEONG"
+	"INJEONG", "CHARACTOR"
 ].join('|') + ")(,|$)");
 exports.ENG_ID = /^[a-z]+$/i;
 exports.KOR_FLAG = {
