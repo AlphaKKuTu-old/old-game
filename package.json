@@ -5,7 +5,7 @@
     "dddos": "^0.1.1",
     "express": "^4.16.2",
     "express-session": "^1.15.6",
-    "kkutu-lib": "github:small-sunshines/kkutu-lib",
+    "kkutu-lib": "github:small-sunshines/morikkutu-lib",
     "ws": "^1.1.1"
   }
 }
