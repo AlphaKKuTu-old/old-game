@@ -1,4 +1,16 @@
 {
+  "name": "morikkutu-game",
+  "description": "game",
+  "version": "1.0.0",
+  "main": "cluster.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/small-sunshines/morikkutu-game.git"
+  },
   "dependencies": {
     "body-parser": "^1.15.2",
     "connect-redis": "^3.3.2",
@@ -7,5 +19,11 @@
     "express-session": "^1.15.6",
     "kkutu-lib": "github:small-sunshines/morikkutu-lib",
     "ws": "^1.1.1"
-  }
+  },
+  "author": "small-sunshines",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/small-sunshines/morikkutu-game/issues"
+  },
+  "homepage": "https://github.com/small-sunshines/morikkutu-game#readme"
 }
