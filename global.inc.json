@@ -1,6 +1,6 @@
 {
 	"ADMIN": [ "Input admin id here" ],
-	"MAIN_PORTS": [ "your full game server url here" ],
+	"MAIN_PORTS": [ ["your full game server url here", "your game server port here"] ],
 	"KKUTUHOT_PATH": "kkutuhot.json",
 	"PASS":"Your password for management Here",
 	"PG_ADDR": "Your PostgreSQL server Address Here",

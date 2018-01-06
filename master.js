@@ -301,7 +301,7 @@ exports.init = function(_SID, CHAN){
 				JLog.warn("Error on #" + key + " on ws: " + err.toString());
 			});
 			// 웹 서버
-			if(socket.upgradeReq.url.match(new RegExp('^/'+GLOBAL.WS_KEY+'-[0-9]{1,5}$')) != null) {
+			if(socket.upgradeReq.url.match(new RegExp(GLOBAL.WS_KEY+'-[0-9]{1,5}$')) != null) {
 				if(WDIC[key]) WDIC[key].socket.close();
 				WDIC[key] = new KKuTu.WebServer(socket);
 				JLog.info(`New web server #${key}`);
