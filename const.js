@@ -215,13 +215,7 @@ exports.KO_INJEONG = [
 	"HSS", "KMV", "HDC", "HOS"
 ];
 
-exports.KO_ADDABLETHEME = [
-	"VOC", "KTV", "KOT", "DOT", "DGM", "RAG",
-	"LOL", "MAP", "MNG", "MOB", "HYK", "CYP",
-	"STA", "OIJ", "KGR", "ESB", "ELW", "OVW",
-	"NEX", "KPO", "JLN", "JAN", "ZEL", "POK",
-	"HSS", "KMV", "HDC", "HOS", 'ALK'
-]
+exports.KO_ADDABLETHEME = concat(exports.KO_CHARACTER, exports.KO_INJEONG)
 exports.KO_CHARACTER = [
 	'ALK'
 ];
@@ -243,7 +237,7 @@ exports.EN_THEME = [
 exports.IJP_EXCEPT = [
 	"OIJ"
 ];
-exports.KO_IJP = exports.KO_INJEONG.concat(exports.KO_THEME).filter(function(item){ return !exports.IJP_EXCEPT.includes(item); });
+exports.KO_IJP = exports.KO_ADDABLETHEME.filter(function(item){ return !exports.IJP_EXCEPT.includes(item); });
 exports.EN_IJP = exports.EN_INJEONG.concat(exports.EN_THEME).filter(function(item){ return !exports.IJP_EXCEPT.includes(item); });
 exports.REGION = {
 	'en': "en",
