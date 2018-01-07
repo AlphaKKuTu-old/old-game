@@ -212,8 +212,16 @@ exports.KO_INJEONG = [
 	"LOL", "MAP", "MNG", "MOB", "HYK", "CYP",
 	"STA", "OIJ", "KGR", "ESB", "ELW", "OVW",
 	"NEX", "KPO", "JLN", "JAN", "ZEL", "POK",
-	"HSS", "KMV", "HDC", "HOS", "ALK"
+	"HSS", "KMV", "HDC", "HOS"
 ];
+
+exports.KO_ADDABLETHEME = [
+	"VOC", "KTV", "KOT", "DOT", "DGM", "RAG",
+	"LOL", "MAP", "MNG", "MOB", "HYK", "CYP",
+	"STA", "OIJ", "KGR", "ESB", "ELW", "OVW",
+	"NEX", "KPO", "JLN", "JAN", "ZEL", "POK",
+	"HSS", "KMV", "HDC", "HOS", 'ALK'
+]
 exports.KO_CHARACTER = [
 	'ALK'
 ];
