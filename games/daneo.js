@@ -23,10 +23,8 @@
  */
 
 const Const = require('../const');
-//볕뉘 수정
 const lib = require('kkutu-lib');
 const Lizard = lib.lizard;
-//볕뉘 수정 끝
 let DB;
 let DIC;
 
