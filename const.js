@@ -215,7 +215,7 @@ exports.KO_INJEONG = [
 	"HSS", "KMV", "HDC", "HOS"
 ];
 
-exports.KO_ADDABLETHEME = exports.KO_CHARACTER.concat(exports.KO_INJEONG)
+exports.KO_ADDABLETHEME = exports.KO_INJEONG.concat(exports.KO_CHARACTER)
 exports.KO_CHARACTER = [
 	'ALK'
 ];
