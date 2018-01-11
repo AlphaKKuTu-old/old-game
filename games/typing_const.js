@@ -30,6 +30,6 @@ File.readFile(`${__dirname}/../proverbs.txt`, function(err, res){
 	db.forEach(function(item){
 		let lang = item.slice(0, 2);
 		
-		exports.PROVERBS[lang] = item.slice(3).split('\r\n');	
+		exports.PROVERBS[lang] = item.slice(3).split(/\r\n|\r|\n/g);	
 	});
 });
