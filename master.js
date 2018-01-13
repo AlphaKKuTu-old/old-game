@@ -403,7 +403,32 @@ function joinNewUser($c) {
 	JLog.info("New user #" + $c.id);
 }
 
-KKuTu.onClientMessage = function($c, msg){
+KKuTu.onClientMessage = function ($c, msg) {
+	if (!msg) return;
+	
+	if ($c.passRecaptcha) {
+		processClientRequest($c, msg);
+	} else {
+		if (msg.type === 'recaptcha') {
+			Recaptcha.verifyRecaptcha(msg.token, $c.socket._socket.remoteAddress, function (success) {
+				if (success) {
+					$c.passRecaptcha = true;
+
+					joinNewUser($c);
+
+					processClientRequest($c, msg);
+				} else {
+					JLog.warn(`Recaptcha failed from IP ${$c.socket._socket.remoteAddress}`);
+
+					$c.sendError(447);
+					$c.socket.close();
+				}
+			});
+		}
+	}
+};
+
+function processClientRequest($c, msg) {
 	let stable = true;
 	let temp;
 	let now = (new Date()).getTime();
