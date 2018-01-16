@@ -208,11 +208,11 @@ exports.MISSION_ko = [ "가", "나", "다", "라", "마", "바", "사", "아", "
 exports.MISSION_en = [ "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" ];
 
 exports.KO_INJEONG = [
-	"VOC", "KTV", "KOT", "DOT", "DGM", "RAG",
-	"LOL", "MAP", "MNG", "MOB", "HYK", "CYP",
-	"STA", "OIJ", "KGR", "ESB", "ELW", "OVW",
-	"NEX", "KPO", "JLN", "JAN", "ZEL", "POK",
-	"HSS", "KMV", "HDC", "HOS"
+	"IMS", "VOC", "KTV", "KOT", "DOT", "DGM",
+	"RAG", "LOL", "MAP", "MNG", "MOB", "HYK",
+	"CYP", "STA", "OIJ", "KGR", "ESB", "ELW",
+	"OVW", "NEX", "KPO", "JLN", "JAN", "ZEL",
+	"POK", "HSS", "KMV", "HDC", "HOS"
 ];
 
 exports.KO_ADDABLETHEME = exports.KO_INJEONG.concat(['ALK'])
