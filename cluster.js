@@ -69,10 +69,10 @@ if(Cluster.isMaster){
 		}
 		JLog.error(`Worker @${chan} ${w.process.pid} died`);
 		if(Array.isArray(Const.MAIN_PORTS[SID])) {
-			channels[chan] = Cluster.fork({ SERVER_NO_FORK: true, KKUTU_PORT: Const.MAIN_PORTS[SID][1] + 416 + i, CHANNEL: chan });
+			channels[chan] = Cluster.fork({ SERVER_NO_FORK: true, KKUTU_PORT: Const.MAIN_PORTS[SID][1] + 416 + (chan - 1), CHANNEL: chan });
 		} else {
 			let url = URL.parse(Const.MAIN_PORTS[SID]);
-			channels[chan] = Cluster.fork({ SERVER_NO_FORK: true, KKUTU_PORT: parseInt(url.port) + 416 + i, CHANNEL: chan });
+			channels[chan] = Cluster.fork({ SERVER_NO_FORK: true, KKUTU_PORT: parseInt(url.port) + 416 + (chan - 1), CHANNEL: chan });
 		}
 	});
 	if(Array.isArray(Const.MAIN_PORTS[SID])) {
