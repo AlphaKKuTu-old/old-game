@@ -123,7 +123,7 @@ Server.on('connection', function (socket) {
   socket.on('error', function (err) {
     JLog.warn('Error on #' + key + ' on ws: ' + err.toString())
   })
-  if (CHAN != Number(chunk[1])) {
+  if (CHAN !== Number(chunk[1])) {
     JLog.warn(`Wrong channel value ${chunk[1]} on @${CHAN}`)
     socket.close()
     return
