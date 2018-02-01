@@ -178,26 +178,18 @@ const keyLog = {}
 function cheatDetection (id, place, msg) {
 	function message (title, isChat) {
 		let body = {
-			attachments: [
-				{
-					title: title,
-					pretext: '치트 사용이 감지되었습니다.',
-					text: (isChat ? '채팅: ' : '키: ') +
-						+(isChat ? keyLog[id].lastChat : keyLog[id].lastKey) +
-						+' -> ' + (isChat ? msg.v : msg.v) + '\n' + id,
-					mrkdwn_in: [
-						'text',
-						'pretext'
-					]
-				}
-			]
-		};
-		request(GLOBAL.SLACK_URL, {
-			body: body,
-			json: true
-		}, (err, res, body) => {
-			if (err) JLog.error(err);
-		});
+            "attachments": [
+                {
+                    "title": "테스트",
+                    "pretext": "치트 사용이 감지되었습니다.",
+                    "text": "테스트",
+                    "mrkdwn_in": ["text", "pretext"]
+                }
+            ]
+        }
+        request(GLOBAL.SLACK_URL, { body: body, json: true }, (err, res, body) => {
+            
+        })
 	}
 
 	// https://blog.outsider.ne.kr/322
