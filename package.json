@@ -17,7 +17,9 @@
     "dddos": "^0.1.1",
     "express": "^4.16.2",
     "express-session": "^1.15.6",
-    "kkutu-lib": "github:small-sunshines/morikkutu-lib",
+    "hangul-js": "^0.2.4",
+    "kkutu-lib": "git+https://github.com/small-sunshines/morikkutu-lib.git",
+    "request": "^2.83.0",
     "ws": "^1.1.1"
   },
   "author": "small-sunshines",

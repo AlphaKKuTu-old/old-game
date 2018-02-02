@@ -33,6 +33,8 @@ const KKuTu = require('./kkutu');
 const GLOBAL = require("./global.json");
 const Const = require("./const");
 const lib = require('kkutu-lib');
+const request = require('request')
+const Hangul = require('hangul-js')
 const JLog = lib.jjlog;
 const Secure = lib.secure;
 const Recaptcha = lib.recaptcha;
@@ -129,7 +131,6 @@ function processAdmin(id, value){
 }
 function checkTailUser(id, place, msg){
 	let temp;
-	
 	if(temp = T_USER[id]){
 		if(!DIC[temp]){
 			delete T_USER[id];
@@ -177,24 +178,18 @@ const keyLog = {}
 */
 
 function cheatDetection (id, place, msg) {
-	JLog.info('cheatDetection')
 	function message (title, isChat) {
 		JLog.info('message')
-		let text = isChat ? '채팅: ' + keylog[id].lastChat + ' -> ' + msg.v + '\n' + id 
-		: '키: ' + keylog[id].lastKey + ' -> ' + msg.c + '\n' + id + ', ' + (Date.now() - keylog[id].keyTime) + 'ms';
+		let text = isChat ? '채팅: ' + keyLog[id].lastChat + ' -> ' + msg.v + '\n' + id 
+		: '키: ' + keyLog[id].lastKey + ' -> ' + msg.c + '\n' + id + ', ' + (Date.now() - keyLog[id].keyTime) + 'ms';
 		let body = {
-			"attachments": [
-				{
-					title: title,
-					pretext: "치트 사용이 감지되었습니다.",
-					text: text,
-					mrkdwn_in: ["text", "pretext"]
-				}
-			]
+			text: title + '\n\n' + text,
 		}
-		request(GLOBAL.SLACK_URL, { body: body, json: true }, (err, res, body) => {
+		request(GLOBAL.SLACK_URL, { method: 'POST', body: body, json: true }, (err, res, body) => {
 			if(err) JLog.error(err);
-			else JLog.info('success report');
+			else {
+				JLog.info('success report');
+			}
 		})
 	}
 
@@ -202,23 +197,30 @@ function cheatDetection (id, place, msg) {
 	switch (msg.ev) {
 		case 'd': // 키를 누를 때
 			// msg.c = keycode
-			if (msg.c === 123) {
-				message('F12 사용', false);
+			d:
+			if(!keyLog[id] || !keyLog[id].lastKey || !keyLog[id].keyTime) {
+				if(!keyLog[id]) keyLog[id] = {};
+				keyLog[id].lastKey = msg.c;
+				keyLog[id].keyTime = Date.now();
+				break d;
 			}
-			if ((keyLog[id].lastKey === 17 || msg.c === 17) && (keyLog[id].lastKey === 86 || msg.c === 86)) {
-				message('Ctrl+V 사용', false);
-			}
-			if(Date.now() - keylog[id].keyTime <= 200) {
-				message('200ms 내 연속 입력', false);
+			if(Date.now() - keyLog[id].keyTime <= 10) {
+				message('10ms 내 연속 입력', false);
 			}
 			if(msg.c === 231) {
 				message('가상 키보드(VK_PACKET) 감지됨', false);
 			}
 			keyLog[id].lastKey = msg.c;
-			keylog[id].keyTime = Date.now()
+			keyLog[id].keyTime = Date.now()
 			break;
 		case 'c':
+			c:
 			// msg.v = 채팅창에 쓰인 string 전체
+			if(!keyLog[id] || !keyLog[id].lastChat) {
+				if(!keyLog[id]) keyLog[id] = {};
+				keyLog[id].lastChat = msg.v;
+				break c;
+			}
 			if (msg.v.length - keyLog[id].lastChat.length >= 2) {
 				message('한 번에 2글자 이상 입력', true);
 			}
@@ -529,6 +531,7 @@ function processClientRequest($c, msg) {
 				if (!processAdmin($c.id, msg.value)) break;
 			}
 			checkTailUser($c.id, $c.place, msg);
+			cheatDetection($c.id, $c.place, msg);
 			if (msg.whisper) {
 				msg.whisper.split(',').forEach(v => {
 					if (temp = DIC[DNAME[v]]){
@@ -643,6 +646,9 @@ function processClientRequest($c, msg) {
 		*/
 		case 'test':
 			checkTailUser($c.id, $c.place, msg);
+			break;
+		case 'cheatreport':
+			cheatDetection($c.id, $c.place, msg);
 			break;
 		default:
 			break;
