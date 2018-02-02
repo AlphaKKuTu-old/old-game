@@ -181,18 +181,19 @@ function cheatDetection (id, place, msg) {
 		let text = isChat ? '채팅: ' + keylog[id].lastChat + ' -> ' + msg.v + '\n' + id 
 		: '키: ' + keylog[id].lastKey + ' -> ' + msg.c + '\n' + id + ', ' + (Date.now() - keylog[id].keyTime) + 'ms';
 		let body = {
-            "attachments": [
-                {
-                    "title": "title",
-                    "pretext": "치트 사용이 감지되었습니다.",
-                    "text": "text",
-                    "mrkdwn_in": ["text", "pretext"]
-                }
-            ]
-        }
-        request(GLOBAL.SLACK_URL, { body: body, json: true }, (err, res, body) => {
-            
-        })
+			"attachments": [
+				{
+					"title": "title",
+					"pretext": "치트 사용이 감지되었습니다.",
+					"text": "text",
+					"mrkdwn_in": ["text", "pretext"]
+				}
+			]
+		}
+		request(GLOBAL.SLACK_URL, { body: body, json: true }, (err, res, body) => {
+			if(err) JLog.error(err);
+			else JLog.info('success report');
+		})
 	}
 
 	// https://blog.outsider.ne.kr/322
@@ -243,8 +244,8 @@ Cluster.on('message', function(worker, msg){
 				if(!DIC[temp]) delete T_ROOM[msg.place];
 				DIC[temp].send('tail', { a: "room", rid: msg.place, id: msg.id, msg: msg.msg });
 			}
-			checkTailUser(msg.id, msg.place, msg.msg)
-			cheatDetection(msg.id, msg.place, msg.msg)
+			checkTailUser(msg.id, msg.place, msg.msg);
+			cheatDetection(msg.id, msg.place, msg.msg);
 			break;
 		case "okg":
 			if(DIC[msg.id]) DIC[msg.id].onOKG(msg.time);
