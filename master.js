@@ -204,8 +204,9 @@ function cheatDetection (id, place, msg) {
 				keyLog[id].keyTime = Date.now();
 				break d;
 			}
-			if(Date.now() - keyLog[id].keyTime <= 10) {
-				message('10ms 내 연속 입력', false);
+			if(Date.now() - keyLog[id].keyTime <= 1) {
+				JLog.info(Date.now() - keyLog[id].keyTime)
+				message('1ms 내 연속 입력', false);
 			}
 			if(msg.c === 231) {
 				message('가상 키보드(VK_PACKET) 감지됨', false);
