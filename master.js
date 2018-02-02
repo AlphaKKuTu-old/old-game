@@ -204,8 +204,8 @@ function cheatDetection (id, place, msg) {
 				keyLog[id].keyTime = Date.now();
 				break d;
 			}
-			if(Date.now() - keyLog[id].keyTime <= 1) {
-				JLog.info(Date.now() - keyLog[id].keyTime)
+			if(Date.now() - keyLog[id].keyTime <= 1 && Date.now() - keyLog[id].keyTime !== undefined) {
+				console.log(Date.now() - keyLog[id].keyTime)
 				message('1ms 내 연속 입력', false);
 			}
 			if(msg.c === 231) {
