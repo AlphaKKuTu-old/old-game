@@ -30,13 +30,14 @@ const Const = require('./const');
 const lib = require('kkutu-lib');
 const global = require('./global.json')
 const JLog = lib.jjlog;
-const SID = Number(process.argv[2] || 0);
-const CPU = Number(process.argv[3] || global.CLUSTER_SLAVES || 4); //require("os").cpus().length;
+let SID = Number(process.argv[2] || 0);
+let CPU = Number(process.argv[3] || global.CLUSTER_SLAVES || 4); //require("os").cpus().length;
 const URL = require('url');
 
 if(isNaN(SID)){
 	if(process.argv[2] == "test"){
 		global.test = true;
+		SID = 0;
 		CPU = 1;
 	}else{
 		console.log(`Invalid Server ID ${process.argv[2]}`);

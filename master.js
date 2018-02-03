@@ -225,10 +225,10 @@ function cheatDetection (id, place, msg) {
 			if (msg.v.length - keyLog[id].lastChat.length >= 2) {
 				message('한 번에 2글자 이상 입력', true);
 			}
-			if (msg.v.length - keyLog[id].lastChat.length === 1 &&
+			/*if (msg.v.length - keyLog[id].lastChat.length === 1 &&
 			Hangul.isComplete(msg.v.slice(-1))) {
 				message('초성을 치지 않고 바로 입력', true);
-			}
+			}*/
 			keyLog[id].lastChat = msg.v;
 			break;
 		case 'u': // 키에서 손을 뗄 때
