@@ -313,6 +313,15 @@ exports.Client = function(socket, profile, sid){
 		}
 	};
 	*/
+	my.drawingCanvas = function(msg) {
+		let $room = ROOM[my.place];
+		
+		if(!$room) return;
+		if(!$room.gaming) return;
+		if($room.rule.rule != 'Drawing') return;
+		
+		$room.drawingCanvas(msg);
+	};
 	my.getData = function(gaming){
 		const o = {
 			id: my.id,
@@ -1049,6 +1058,9 @@ exports.Room = function(room, channel){
 			})) return 414;
 		}
 		return false;
+	};
+	my.drawingCanvas = function(msg) {
+		my.byMaster('drawCanvas', { data: msg.data }, true);
 	};
 	my.ready = function(){
 		let i, all = true;

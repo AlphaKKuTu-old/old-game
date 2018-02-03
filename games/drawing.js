@@ -97,7 +97,8 @@ exports.turnStart = function(){
 	my.game.hintTimer2 = setTimeout(function(){ turnHint.call(my); }, my.game.roundTime * 0.667);
 
 	my.byMaster('turnStart', {
-		roundTime: my.game.roundTime
+		roundTime: my.game.roundTime,
+		word: my.game.answer._id
 	}, true);
 };
 function turnHint(){
@@ -140,7 +141,9 @@ exports.submit = function(client, text){
 		score = my.getScore(text, t);
 		my.game.primary++;
 		my.game.winner.push(client.id);
-		my.game.firstWinner = client.id;
+		if(!my.game.firstWinner) {
+			my.game.firstWinner = client.id;
+		}
 		client.game.score += score;
 		client.publish('turnEnd', {
 			target: client.id,
@@ -162,7 +165,7 @@ exports.submit = function(client, text){
 	}else{
 		client.chat(text);
 	}
-	if(play) if(my.game.primary + my.game.giveup.length >= my.game.seq.length){
+	if(play) if(my.game.primary + my.game.giveup.length + 1 >= my.game.seq.length){
 		clearTimeout(my.game.hintTimer);
 		clearTimeout(my.game.hintTimer2);
 		clearTimeout(my.game.qTimer);
@@ -217,7 +220,7 @@ function getHint($ans){
 function getAnswer(theme, nomean){
 	const my = this;
 	const R = new Lizard.Tail();
-	if(my.rule.lagn == 'ko') {
+	if(my.rule.lang == 'ko') {
 		let args = [ [ '_id', { $nin: my.game.done } ] ];
 		
 		args.push([ 'theme', new RegExp("(,|^)(" + theme + ")(,|$)") ]);
