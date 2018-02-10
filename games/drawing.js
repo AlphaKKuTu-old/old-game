@@ -98,7 +98,8 @@ exports.turnStart = function(){
 
 	my.byMaster('turnStart', {
 		roundTime: my.game.roundTime,
-		word: my.game.answer._id
+		word: my.game.answer._id,
+		theme: my.game.theme
 	}, true);
 };
 function turnHint(){
