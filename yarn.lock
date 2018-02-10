@@ -404,8 +404,8 @@ jsprim@^1.2.2:
     verror "1.10.0"
 
 "kkutu-lib@git+https://github.com/small-sunshines/morikkutu-lib.git":
-  version "1.0.0"
-  resolved "git+https://github.com/small-sunshines/morikkutu-lib.git#a767a88c3f658cc8e0e86cd746f098d6fd1de614"
+  version "1.0.1"
+  resolved "git+https://github.com/small-sunshines/morikkutu-lib.git#31894a89d05018661e8d31d18f6fce520720e658"
   dependencies:
     colors "^1.1.2"
     pg "^7.3.0"

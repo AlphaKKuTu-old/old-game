@@ -227,12 +227,16 @@ function getAnswer(theme, nomean){
 		args.push([ 'theme', new RegExp("(,|^)(" + theme + ")(,|$)") ]);
 		args.push([ 'type', Const.KOR_GROUP ]);
 		args.push([ 'flag', { $lte: 7 } ]);
+		if(!my.opts.unlimited) {
+			args.push([ 'length(_id)', { $gte: 2}]);
+			args.push([ 'length(_id)', { $lte: 10}]);
+		}
 		DB.kkutu['ko'].find.apply(my, args).on(function($res){
 			if(!$res) return R.go(null);
 			let pick;
 			let len = $res.length;
 			
-			if(!len) return R.go(null);
+			if (!len) return R.go(null);
 			do{
 				pick = Math.floor(Math.random() * len);
 				if($res[pick]._id.length >= 2) if($res[pick].type == "INJEONG" || $res[pick].mean.length >= 0){
@@ -248,6 +252,10 @@ function getAnswer(theme, nomean){
 		let args = [ [ '_id', { $nin: my.game.done } ] ];
 		
 		args.push([ 'theme', new RegExp("(,|^)(" + theme + ")(,|$)") ]);
+		if (!my.opts.character) {
+			args.push([ 'length(_id)', { $gte: 4}]);
+			args.push([ 'length(_id)', { $lte: 16}]);
+		}
 		DB.kkutu['en'].find.apply(my, args).on(function($res){
 			if(!$res) return R.go(null);
 			let pick;
