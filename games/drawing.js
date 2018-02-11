@@ -177,7 +177,7 @@ exports.getScore = function(text, delay){
 	const my = this;
 	let rank = my.game.hum - my.game.primary + 3;
 	let tr = 1 - delay / my.game.roundTime;
-	let score = 6 * Math.pow(rank, 1.4) * ( 0.5 + 0.5 * tr );
+	let score = 60 * Math.pow(rank, 1.4) * ( 0.5 + 0.5 * tr );
 
 	return Math.round(score * my.game.themeBonus);
 };
@@ -195,12 +195,18 @@ function getConsonants(word, lucky){
 		lucky--;
 	}
 	for(let i=0; i<len; i++){
-		c = word.charCodeAt(i) - 44032;
+		c = /[가-힣a-zA-Z]/.test(word.charAt(i));
 		
-		if(c < 0 || rv.includes(i)){
+		if(!c || rv.includes(i)){
 			R += word.charAt(i);
 			continue;
-		}else c = Math.floor(c / 588);
+		} else {
+			if(/[가-힣]/.test(word.charAt(i))) {
+				c = Math.floor((word.charCodeAt(i)  - 44032) / 588);
+			} else {
+				c = Const.INIT_SOUNDS.length - 1
+			}
+		}
 		R += Const.INIT_SOUNDS[c];
 	}
 	return R;
