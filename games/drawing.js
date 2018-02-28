@@ -53,6 +53,8 @@ exports.roundReady = function(){
 	clearTimeout(my.game.qTimer);
 	clearTimeout(my.game.hintTimer);
 	clearTimeout(my.game.hintTimer2);
+	clearTimeout(my.game.hintTimer3);
+	clearTimeout(my.game.hintTimer4);
 	my.game.themeBonus = 0.3 * Math.log(0.6 * ijl + 1);
 	my.game.winner = [];
 	my.game.giveup = [];
@@ -68,7 +70,7 @@ exports.roundReady = function(){
 			my.game.answer = $ans || {};
 			my.game.done.push($ans._id);
 			$ans.mean = ($ans.mean.length > 20) ? $ans.mean : getConsonants($ans._id, Math.round($ans._id.length / 2));
-			my.game.hint = getHint($ans);
+			my.game.hint = getHint($ans, my.game.theme);
 			my.game.painter = (my.game.firstWinner ? my.game.firstWinner  : my.players[getRandomIntInclusive(0, my.players.length - 1)]);
 			my.game.firstWinner = null;
 			my.byMaster('roundReady', {
@@ -93,8 +95,10 @@ exports.turnStart = function(){
 	my.game.meaned = 0;
 	my.game.primary = 0;
 	my.game.qTimer = setTimeout(my.turnEnd, my.game.roundTime);
-	my.game.hintTimer = setTimeout(function(){ turnHint.call(my); }, my.game.roundTime * 0.333);
-	my.game.hintTimer2 = setTimeout(function(){ turnHint.call(my); }, my.game.roundTime * 0.667);
+	my.game.hintTimer = setTimeout(function(){ turnHint.call(my); }, 3000)
+	my.game.hintTimer2 = setTimeout(function(){ turnHint.call(my); }, 6000)
+	my.game.hintTimer3 = setTimeout(function(){ turnHint.call(my); }, my.game.roundTime * 0.333);
+	my.game.hintTimer4 = setTimeout(function(){ turnHint.call(my); }, my.game.roundTime * 0.667);
 
 	my.byMaster('turnStart', {
 		roundTime: my.game.roundTime,
@@ -169,6 +173,8 @@ exports.submit = function(client, text){
 	if(play) if(my.game.primary + my.game.giveup.length + 1 >= my.game.seq.length){
 		clearTimeout(my.game.hintTimer);
 		clearTimeout(my.game.hintTimer2);
+		clearTimeout(my.game.hintTimer3);
+		clearTimeout(my.game.hintTimer4);
 		clearTimeout(my.game.qTimer);
 		my.turnEnd();
 	}
@@ -211,11 +217,14 @@ function getConsonants(word, lucky){
 	}
 	return R;
 }
-function getHint($ans){
+function getHint($ans, theme){
 	let R = [];
 	let h1 = $ans.mean.replace(new RegExp($ans._id, "g"), "★");
 	let h2;
 	
+	R.push([theme]);
+	R.push(getConsonants($ans._id, Math.ceil($ans._id.length / 2)));
+
 	R.push(h1);
 	do{
 		h2 = getConsonants($ans._id, Math.ceil($ans._id.length / 2));
