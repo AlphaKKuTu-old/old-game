@@ -294,7 +294,7 @@ exports.Client = function(socket, profile, sid){
 	socket.on('message', function(msg){
 		let data, room = ROOM[my.place];
 		
-		JLog.log(`Chan @${channel} Msg #${my.id}: ${msg}`);
+		JLog.log(`Chan @${channel} Msg #${my.id}: ${(msg.type === 'drawingCanvas' ? msg : 'is large data')}`);
 		try{ data = JSON.parse(msg); }catch(e){ data = { error: 400 }; }
 		if(Cluster.isWorker) process.send({ type: "tail-report", id: my.id, chan: channel, place: my.place, msg: data.error ? msg : data });
 		
