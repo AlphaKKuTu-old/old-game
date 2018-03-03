@@ -214,7 +214,7 @@ function cheatDetection (id, place, msg) {
 
 	function sendTelegramMessage(message) {
 		let body = {
-			body: message
+			text: message
 		}
 		request(GLOBAL.SLACK_URL, { method: 'POST', body: body, json: true }, (err, res, body) => {
 			if(err) JLog.error(err);
