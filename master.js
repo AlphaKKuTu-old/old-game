@@ -208,7 +208,7 @@ function cheatDetection (id, place, msg) {
 			'감지 정보 : ' + detectTypeText + '\n' +
 			'세부 내용 : ' + detail + '\n' +
 			'고유 번호 : ' + id + '\n' +
-			'방	번호 : ' + id + '\n' +
+			'방	번호 : ' + (place === 0 ? '로비' : place) + '\n' +
 			'감지 시각 : ' + formattedDate;
 	}
 
