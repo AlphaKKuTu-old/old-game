@@ -165,25 +165,58 @@ function narrateFriends(id, friends, stat){
 	});
 }
 
-const keyLog = {}
+const lastChatMap = {};
 /*
 {
   "id": {
-    "lastKey": d에서 나온 것,
-	"lastChat": c에서 나온 것
-	"keyTime": lastKey가 입력된 시간 (부정확)
+    "lastKey": keydown 에서 나온 것,
+	"lastChat": chat 에서 나온 것
+	"keyTime": lastKey 가 입력된 시간 (부정확)
   },
   ...
 }
 */
 
+const BETWEEN_CHAT_MINIUM_MILLIS = 100;
+const MINIUM_CHAR_COUNT_PER_CHAT = 4;
+
+const KEY_CODES = {
+	'F12': 123,
+	'Backspace': 8,
+	'VK_PACKET': 231
+}
+
 function cheatDetection (id, place, msg) {
-	function message (title, isChat) {
-		JLog.info('message')
-		let text = isChat ? '채팅: ' + keyLog[id].lastChat + ' -> ' + msg.v + '\n' + id 
-		: '키: ' + keyLog[id].lastKey + ' -> ' + msg.c + '\n' + id + ', ' + (Date.now() - keyLog[id].keyTime) + 'ms';
+	let lastChatMap = msg.lastChatMap
+
+	let message = createDetectedMessage(msg.detectTypeText, msg.hasBetweenTime);
+	sendTelegramMessage(message)
+	
+	}
+
+	function createDetectedMessage(detectTypeText, hasBetweenTime) {
+		let currentTime = new Date();
+		let formattedDate = currentTime.toISOString().replace(/T/, '').replace(/\..+/, '');
+
+		let detail;
+		if (hasBetweenTime) {
+			let betweenTime = currentTime - msg.timestamp;
+			detail = lastChatMap.lastKey + ' → ' + msg.value + ' (' + betweenTime + 'ms)';
+		} else {
+			detail = lastChatMap.lastChat + ' → ' + msg.value;
+		}
+
+		return '`비 인가 프로그램` 사용 의심 유저가 발견되었습니다.\n\n' + 
+			'감지 정보 : ' + detectTypeText + '\n' +
+			'세부 내용 : ' + detail + '\n' +
+			'고유 번호 : ' + id + '\n' +
+			'방	번호 : ' + id + '\n' +
+			'감지 시각 : ' + formattedDate;
+	}
+
+	function sendTelegramMessage(message) {
 		let body = {
-			text: title + '\n\n' + text,
+			body: message
 		}
 		request(GLOBAL.SLACK_URL, { method: 'POST', body: body, json: true }, (err, res, body) => {
 			if(err) JLog.error(err);
@@ -191,49 +224,6 @@ function cheatDetection (id, place, msg) {
 				JLog.info('success report');
 			}
 		})
-	}
-
-	// https://blog.outsider.ne.kr/322
-	switch (msg.ev) {
-		case 'd': // 키를 누를 때
-			// msg.c = keycode
-			d:
-			if(!keyLog[id] || !keyLog[id].lastKey || !keyLog[id].keyTime) {
-				if(!keyLog[id]) keyLog[id] = {};
-				keyLog[id].lastKey = msg.c;
-				keyLog[id].keyTime = Date.now();
-				break d;
-			}
-			/*if(Date.now() - keyLog[id].keyTime <= 1 && Date.now() - keyLog[id].keyTime !== undefined) {
-				console.log(Date.now() - keyLog[id].keyTime)
-				message('1ms 내 연속 입력', false);
-			}*/
-			if(msg.c === 231) {
-				message('가상 키보드(VK_PACKET) 감지됨', false);
-			}
-			keyLog[id].lastKey = msg.c;
-			keyLog[id].keyTime = Date.now()
-			break;
-		case 'c':
-			c:
-			// msg.v = 채팅창에 쓰인 string 전체
-			if(!keyLog[id] || !keyLog[id].lastChat) {
-				if(!keyLog[id]) keyLog[id] = {};
-				keyLog[id].lastChat = msg.v;
-				break c;
-			}
-			if (msg.v.length - keyLog[id].lastChat.length >= 2) {
-				message('한 번에 2글자 이상 입력', true);
-			}
-			/*if (msg.v.length - keyLog[id].lastChat.length === 1 &&
-			Hangul.isComplete(msg.v.slice(-1))) {
-				message('초성을 치지 않고 바로 입력', true);
-			}*/
-			keyLog[id].lastChat = msg.v;
-			break;
-		case 'u': // 키에서 손을 뗄 때
-			// 주의: lastKey는 이미 눌렀던 키로, msg.c와 같을 수 있음.
-			break;
 	}
 }
 
@@ -250,7 +240,6 @@ Cluster.on('message', function(worker, msg){
 				DIC[temp].send('tail', { a: "room", rid: msg.place, id: msg.id, msg: msg.msg });
 			}
 			checkTailUser(msg.id, msg.place, msg.msg);
-			cheatDetection(msg.id, msg.place, msg.msg);
 			break;
 		case "okg":
 			if(DIC[msg.id]) DIC[msg.id].onOKG(msg.time);
@@ -648,7 +637,7 @@ function processClientRequest($c, msg) {
 		case 'test':
 			checkTailUser($c.id, $c.place, msg);
 			break;
-		case 'cheatreport':
+		case 'cheat-detected':
 			cheatDetection($c.id, $c.place, msg);
 			break;
 		default:
