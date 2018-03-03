@@ -191,8 +191,6 @@ function cheatDetection (id, place, msg) {
 
 	let message = createDetectedMessage(msg.detectTypeText, msg.hasBetweenTime);
 	sendTelegramMessage(message)
-	
-	}
 
 	function createDetectedMessage(detectTypeText, hasBetweenTime) {
 		let currentTime = new Date();
