@@ -411,7 +411,14 @@ exports.init = function(_SID, CHAN){
 					return;
 				}
 				$c.refresh().then(function(ref){
-					if(ref.result == 200){
+					let isBlackRelease = false
+					if (ref.blacktime < (Date.now() / 1000)) {
+						DIC[$c.id] = $c;
+						MainDB.users.update([ '_id', $c.id]).set([ 'blacktime', 0]).set([ 'black', null]).on();
+						JLog.info("Black release #" + $c.id);
+						isBlackRelease = true
+					}
+					if(ref.result == 200 || isBlackRelease) {
 						DIC[$c.id] = $c;
 						DNAME[($c.profile.title || $c.profile.name).replace(/\s/g, "")] = $c.id;
 						MainDB.users.update([ '_id', $c.id ]).set([ 'server', SID ]).on();
@@ -429,11 +436,11 @@ exports.init = function(_SID, CHAN){
 						}
 					} else {
 						$c.send('error', {
-							code: ref.result, message: ref.black
+							code: ref.result, message: ref.black, blacktime: ref.blacktime
 						});
 						$c._error = ref.result;
 						$c.socket.close();
-						// JLog.info("Black user #" + $c.id);
+						JLog.info("Black user #" + $c.id);
 					}
 				});
 			});

@@ -432,6 +432,7 @@ exports.Client = function(socket, profile, sid){
 		}else DB.users.findOne([ '_id', my.id ]).on(function($user){
 			let first = !$user;
 			let black = first ? "" : $user.black;
+			let blacktime = $user.blacktime
 			
 			if(first) $user = { money: 0 };
 			if(black == "null") black = false;
@@ -439,6 +440,7 @@ exports.Client = function(socket, profile, sid){
 				black = false;
 				my.noChat = true;
 			}
+			if(!blacktime) blacktime = null;
 			/* 망할 셧다운제
 			if(Cluster.isMaster && !my.isAjae){ // null일 수는 없다.
 				my.isAjae = Ajae.checkAjae(($user.birthday || "").split('-'));
@@ -465,7 +467,7 @@ exports.Client = function(socket, profile, sid){
 				my.checkExpire();
 				my.okgCount = Math.floor((my.data.playTime || 0) / PER_OKG);
 			}
-			if(black) R.go({ result: 444, black: black });
+			if(black) R.go({ result: 444, black: black, blacktime: blacktime });
 			else if(Cluster.isMaster && $user.server) R.go({ result: 409, black: $user.server });
 			else if(exports.NIGHT && my.isAjae === false) R.go({ result: 440 });
 			else R.go({ result: 200 });
