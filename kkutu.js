@@ -293,8 +293,8 @@ exports.Client = function(socket, profile, sid){
 	});
 	socket.on('message', function(msg){
 		let data, room = ROOM[my.place];
-		
-		JLog.log(`Chan @${channel} Msg #${my.id}: ${(msg.type === 'drawingCanvas' ? 'is drawing data' : msg)}`);
+
+		JLog.log(`Chan @${channel} Msg #${my.id}: ${(JSON.parse(msg).type === 'drawingCanvas' ? 'is drawing data' : msg)}`);
 		try{ data = JSON.parse(msg); }catch(e){ data = { error: 400 }; }
 		if(Cluster.isWorker) process.send({ type: "tail-report", id: my.id, chan: channel, place: my.place, msg: data.error ? msg : data });
 		
@@ -1167,6 +1167,8 @@ exports.Room = function(room, channel){
 		clearTimeout(my.game.hintTimer);
 		clearTimeout(my.game.hintTimer2);
 		clearTimeout(my.game.qTimer);
+		if (my.game.hintTimer3) clearTimeout(my.game.hintTimer3)
+		if (my.game.hintTimer4) clearTimeout(my.game.hintTimer4)
 	};
 	my.roundEnd = function(data){
 		let i, o, rw;
