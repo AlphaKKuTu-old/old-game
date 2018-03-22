@@ -213,7 +213,7 @@ function cheatDetection (id, place, msg) {
 	}
 
 	function sendDiscordMessage(message) {
-		webhook.warn("`비 인가 프로그램` 사용 의심 유저가 발견되었습니다.", message)
+		webhook.warn("비 인가 프로그램 사용 의심 유저가 발견되었습니다.", message)
 	}
 }
 
