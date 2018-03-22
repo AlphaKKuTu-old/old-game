@@ -191,7 +191,7 @@ function cheatDetection (id, place, msg) {
 	let lastChatMap = msg.lastChatMap
 
 	let message = createDetectedMessage(msg.detectTypeText, msg.hasBetweenTime);
-	sendTelegramMessage(message)
+	sendDiscordMessage(message)
 
 	function createDetectedMessage(detectTypeText, hasBetweenTime) {
 		let currentTime = new Date();
@@ -205,8 +205,7 @@ function cheatDetection (id, place, msg) {
 			detail = lastChatMap.lastChat + ' → ' + msg.value;
 		}
 
-		return '`비 인가 프로그램` 사용 의심 유저가 발견되었습니다.\n\n' + 
-			'감지 정보 : ' + detectTypeText + '\n' +
+		return '감지 정보 : ' + detectTypeText + '\n' +
 			'세부 내용 : ' + detail + '\n' +
 			'고유 번호 : ' + id + '\n' +
 			'방	번호 : ' + (place === 0 ? '로비' : place) + '\n' +
@@ -214,15 +213,7 @@ function cheatDetection (id, place, msg) {
 	}
 
 	function sendDiscordMessage(message) {
-		let body = {
-			text: message
-		}
-		request(GLOBAL.SLACK_URL, { method: 'POST', body: body, json: true }, (err, res, body) => {
-			if(err) JLog.error(err);
-			else {
-				JLog.info('success report');
-			}
-		})
+		webhook.warn("`비 인가 프로그램` 사용 의심 유저가 발견되었습니다.", message)
 	}
 }
 
