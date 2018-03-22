@@ -33,7 +33,8 @@ const KKuTu = require('./kkutu');
 const GLOBAL = require("./global.json");
 const Const = require("./const");
 const lib = require('kkutu-lib');
-const request = require('request')
+const discordWebhook = require('webhook-discord')
+const webhook = new discordWebhook(GLOBAL.DISCORD_WEBHOOK)
 const Hangul = require('hangul-js')
 const JLog = lib.jjlog;
 const Secure = lib.secure;
@@ -212,7 +213,7 @@ function cheatDetection (id, place, msg) {
 			'감지 시각 : ' + formattedDate;
 	}
 
-	function sendTelegramMessage(message) {
+	function sendDiscordMessage(message) {
 		let body = {
 			text: message
 		}
