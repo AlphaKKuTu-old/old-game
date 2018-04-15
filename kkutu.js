@@ -433,13 +433,14 @@ exports.Client = function(socket, profile, sid){
 			let first = !$user;
 			let black = first ? "" : $user.black;
 			let blacktime
-			console.log($user.blacktime)
+			/*console.log($user.blacktime)
 			console.log(typeof $user.blacktime)
 			if (typeof $user.blacktime === 'undefined') {
 				blacktime = null
 			} else {
 				blacktime = $user.blacktime
-			}
+			}*/
+			blacktime = null
 			
 			if(first) $user = { money: 0 };
 			if(black == "null") black = false;
