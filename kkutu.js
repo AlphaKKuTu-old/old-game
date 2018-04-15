@@ -433,6 +433,8 @@ exports.Client = function(socket, profile, sid){
 			let first = !$user;
 			let black = first ? "" : $user.black;
 			let blacktime
+			JLog.info($user.blacktime)
+			JLog.info(typeof $user.blacktime)
 			if (typeof $user.blacktime === 'undefined') {
 				blacktime = null
 			} else {
