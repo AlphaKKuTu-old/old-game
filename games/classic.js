@@ -517,6 +517,7 @@ function keyByOptions(opts){
 	if(opts.injeong) arr.push('X');
 	if(opts.loanword) arr.push('L');
 	if(opts.strict) arr.push('S');
+	if(opts.character) arr.push('C');
 	return arr.join('');
 }
 function shuffle(arr){
