@@ -432,7 +432,12 @@ exports.Client = function(socket, profile, sid){
 		}else DB.users.findOne([ '_id', my.id ]).on(function($user){
 			let first = !$user;
 			let black = first ? "" : $user.black;
-			let blacktime = ($user.blacktime ? $user.blacktime : null)
+			let blacktime
+			if ($user.blacktime) {
+				blacktime = $user.blacktime
+			} else {
+				blacktime = null
+			}
 			
 			if(first) $user = { money: 0 };
 			if(black == "null") black = false;
