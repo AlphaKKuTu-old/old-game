@@ -433,7 +433,7 @@ exports.Client = function(socket, profile, sid){
 			let first = !$user;
 			let black = first ? "" : $user.black;
 			let blacktime
-			if (!$user && !$user.blacktime) {
+			if (!$user || !$user.blacktime) {
 				blacktime = null
 			} else {
 				blacktime = $user.blacktime
