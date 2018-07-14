@@ -19,7 +19,7 @@
     "express": "^4.16.2",
     "express-session": "^1.15.6",
     "hangul-js": "^0.2.4",
-    "kkutu-lib": "git+https://github.com/small-sunshines/morikkutu-lib.git",
+    "kkutu-lib": "git+https://github.com/hatty163/morikkutu-lib.git",
     "webhook-discord": "^2.1.0",
     "ws": "^1.1.1"
   },
